@@ -1,3 +1,0 @@
-/home/joe/Documents/unik4690/tutorials/fourier/CMakeFiles/rebuild_cache.dir
-/home/joe/Documents/unik4690/tutorials/fourier/CMakeFiles/edit_cache.dir
-/home/joe/Documents/unik4690/tutorials/fourier/CMakeFiles/a.dir

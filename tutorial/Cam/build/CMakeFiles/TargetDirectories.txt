@@ -1,3 +1,0 @@
-/home/joe/Documents/unik4690/tutorials/Cam/build/CMakeFiles/edit_cache.dir
-/home/joe/Documents/unik4690/tutorials/Cam/build/CMakeFiles/rebuild_cache.dir
-/home/joe/Documents/unik4690/tutorials/Cam/build/CMakeFiles/lab_0_intro.dir

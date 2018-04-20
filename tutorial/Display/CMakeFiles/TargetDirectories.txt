@@ -1,4 +1,0 @@
-/home/joe/Documents/unik4690/tutorials/Display/CMakeFiles/rebuild_cache.dir
-/home/joe/Documents/unik4690/tutorials/Display/CMakeFiles/blend_images.dir
-/home/joe/Documents/unik4690/tutorials/Display/CMakeFiles/edit_cache.dir
-/home/joe/Documents/unik4690/tutorials/Display/CMakeFiles/display_image.dir
