@@ -2,7 +2,8 @@ import argparse
 import logging
 import time
 import sys
-sys.path.append("/home/joe/Documents/tf-pose-estimation/src/")
+sys.path.append("/home/joe/Documents/tf-pose-estimation/src/") 
+sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 from gradient_estimator import human_canny 
 import cv2
 import numpy as np

@@ -380,6 +380,7 @@ class TfPoseEstimator:
                     
                     throaty = int((Centers[0][1]+Centers[1][1])/2) #neck nose mid
                     throatx = (Centers[0][0]+Centers[1][0])/2 #neck nose mid
+                    limblen = 
                     cv2.line(npimg, (Centers[2][0],Centers[2][1]), (throatx,throaty) , common.CocoColors[pair_order], limblen)
                 if (5 in Centers.keys()): #left shoulder to throat
                     throaty = int((Centers[0][1]+Centers[1][1])/2) #neck nose mid

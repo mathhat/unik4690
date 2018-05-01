@@ -1,0 +1,32 @@
+\documentclass{article} %landscape mode included
+\usepackage{geometry}
+\geometry{left=20mm,right=20mm,top=20mm,bottom=30mm}
+\usepackage{fancyvrb}   % for verbatim monospace computer code
+\usepackage{graphicx}   % for \includegraphics command
+\usepackage{pdfpages}
+\usepackage{amssymb,amsmath}    % math stuff
+\usepackage{mathtools}
+\usepackage{verbatim}   % for importing verbatim. fancy is better google it
+\usepackage[utf8]{inputenc} % utf-8 encoding.
+\usepackage{physics} %for bra-ket notattino etc. 
+\usepackage{multicol,caption}
+\usepackage{lipsum}
+\usepackage{epigraph}
+\usepackage{enumitem}
+\usepackage{tensor}
+\usepackage{hyperref}
+\setlength{\columnsep}{1cm}
+\newenvironment{Figure}
+  {\par\medskip\noindent\minipage{\linewidth}}
+  {\endminipage\par\medskip}
+\begin{document}
+\title{Documentatino }
+\author{J \& J}
+\date{2018-05-01}
+\maketitle
+
+ 
+
+
+
+\end{document}
