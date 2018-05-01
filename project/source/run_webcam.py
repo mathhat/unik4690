@@ -49,8 +49,8 @@ if __name__ == '__main__':
         #edges = cv2.threshold(edges, 0, 255, cv2.THRESH_BINARY)[1]  
 
         im_gray = cv2.convertScaleAbs(np.sum(image2, axis=2))
-        #kernel = np.ones((10,10),np.int8)
-        #im_gray = cv2.filter2D(im_gray,-1,kernel)/120.
+        kernel = np.ones((5,5),np.int8)
+        im_gray = cv2.filter2D(im_gray,-1,kernel)/120.
         
         #im_bw = cv2.threshold(im_gray, 0, 255, cv2.THRESH_BINARY)[1]  
         

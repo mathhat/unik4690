@@ -94,7 +94,7 @@ class PoseEstimator:
     Local_PAF_Threshold = 0.2
     PAF_Count_Threshold = 5
     Part_Count_Threshold = 15
-    Part_Score_Threshold = 2.#4.5
+    Part_Score_Threshold = 0.1#2.#4.5
 
     PartPair = namedtuple('PartPair', [
         'score',
@@ -296,7 +296,7 @@ class TfPoseEstimator:
         npimg = npimg*0
         image_h, image_w = npimg.shape[:2]
         centers = {}
-        limblen = 5
+        limblen = 35
 
         for human in humans:
             # draw point
@@ -380,11 +380,12 @@ class TfPoseEstimator:
                     
                     throaty = int((Centers[0][1]+Centers[1][1])/2) #neck nose mid
                     throatx = (Centers[0][0]+Centers[1][0])/2 #neck nose mid
-                    limblen = 
+                    limblen = int(abs(Centers[2][0]-Centers[5][0]))/3
                     cv2.line(npimg, (Centers[2][0],Centers[2][1]), (throatx,throaty) , common.CocoColors[pair_order], limblen)
                 if (5 in Centers.keys()): #left shoulder to throat
                     throaty = int((Centers[0][1]+Centers[1][1])/2) #neck nose mid
                     throatx = (Centers[0][0]+Centers[1][0])/2 #neck nose mid
+                    limblen = int(abs(Centers[2][0]-Centers[5][0]))/3
                     cv2.line(npimg, (Centers[5][0],Centers[5][1]), (throatx,throaty) , common.CocoColors[pair_order], limblen)
             except:
                 print "Observation Error: nose disappeared"
@@ -403,7 +404,7 @@ class TfPoseEstimator:
                     shouldy = Centers[5][1]                    
                     cv2.line(npimg, (shouldx,hipy), (shouldx,shouldy) , common.CocoColors[pair_order], limblen)
             except:
-                print "Observation Error: nose disappeared"
+                print "wAT"
             
         return npimg, centers
 
