@@ -22,10 +22,14 @@
 \begin{document}
 \title{Documentatino }
 \author{J \& J}
-\date{2018-05-01}
+\date{2018-05-02}
 \maketitle
 
  
+
+\section*{Mulige kilder til segmentering:} 
+\url{https://www.cs.cmu.edu/~hebert/boundaries.htm}
+
 
 
 

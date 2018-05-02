@@ -10,6 +10,10 @@ content = r'' #creating initial content,
 #------------content below--------------# 
 content += r''' 
 
+\section*{Mulige kilder til segmentering:} 
+\url{https://www.cs.cmu.edu/~hebert/boundaries.htm}
+
+
 
 '''  
 
