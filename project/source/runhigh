@@ -1,2 +1,2 @@
-python run_webcam.py --model=mobilenet_accurate --resolution=720x720 --camera=1
+python run_webcam.py --model=mobilenet_thin --resolution=720x720 --camera=1
 

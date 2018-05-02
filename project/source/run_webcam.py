@@ -5,10 +5,13 @@ import sys
 sys.path.append("/home/joe/Documents/tf-pose-estimation/src/") 
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 from gradient_estimator import human_canny 
+#from draw import draw_humans
+
 import cv2
 import numpy as np
 
 from estimator import TfPoseEstimator
+from draw import draw_humans
 from networks import get_graph_path, model_wh
 
 logger = logging.getLogger('TfPoseEstimator-WebCam')
@@ -35,43 +38,39 @@ if __name__ == '__main__':
     w, h = model_wh(args.resolution)
     e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h))
     cam = cv2.VideoCapture(args.camera)
-    #ret_val, image = cam.read()
+    ret_val, image0 = cam.read()
     #humans = e.inference(image)
-
     while True:
         ret_val, image = cam.read()
+        #imgrad = (cv2.cvtColor(image0, cv2.COLOR_BGR2GRAY)+1.) - (cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
+        
         humans = e.inference(image)
-        image2,centers = TfPoseEstimator.draw_humans(image, humans,imgcopy=False)
 
-        #imgray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        image2,centers = draw_humans(image, humans,imgcopy=False)
 
-        edges = cv2.Canny(image,120,400)/120.
-        #edges = cv2.threshold(edges, 0, 255, cv2.THRESH_BINARY)[1]  
+        image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
 
-        im_gray = cv2.convertScaleAbs(np.sum(image2, axis=2))
-        kernel = np.ones((5,5),np.int8)
-        im_gray = cv2.filter2D(im_gray,-1,kernel)/120.
+        edges = cv2.Canny(image,150,120)
         
-        #im_bw = cv2.threshold(im_gray, 0, 255, cv2.THRESH_BINARY)[1]  
-        
+        #kernel = np.ones((5,15),np.int8)
+        #im_gray = cv2.filter2D(im_gray,-1,kernel)
+
+
         cv2.putText(image,
                     "FPS: %f" % (1.0 / (time.time() - fps_time)),
                     (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     (0, 0, 255), 2)
         
         
-        if len(centers)>1:
-            contours = human_canny(edges,im_gray)
+        if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
+            contours = human_canny(edges,image2)
             cv2.drawContours(image, contours, -1, (0,255,0), 3)
             cv2.imshow('tf-pose-estimation result', image)
         
         #cv2.imshow('tf-pose-estimation result', image2)
 
-        
-        
-
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
             break
-
+        #image0 = cam.read()[1]
     cv2.destroyAllWindows()
