@@ -1,6 +1,9 @@
+# -*- coding:utf-8 -*-
 import common
 import cv2
 import numpy as np
+
+    
 
 def draw_humans(npimg, humans, imgcopy=False,):
     if imgcopy:
@@ -26,13 +29,27 @@ def draw_humans(npimg, humans, imgcopy=False,):
 
 
         #this is we're we customize the lines and circles around the human    
-
-
+        
+        #BRRRÆPP
+        # Generell rekkefølge for testser: (begge ører)
+        #                                  (øre motsatt øye)
+        #                                  (øye øye)
+        #                                  (ett øye)
+        # Som cond-ish liste:
+        tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
+        lear = tryvar(17)
+        rear = tryvar(16)
+        leye = tryvar(15)
+        reye = tryvar(14)
+        nose = tryvar(0)
+        neck = tryvar(1)
+            
+        
         #head and neck
-        if (16 in Centers.keys())*(17 in Centers.keys()): #head circle if both ears are present
+        if (lear and rear): #head circle if both ears are present
             try:                                             #+ neckline
-                lx = Centers[17][0]
-                rx = Centers[16][0]
+                lx = lear[0]
+                rx = rear[0]
                 hx = (lx + rx)/2 
                 dx = (lx - rx) #relation for headsize, distance between ears
                 nx = Centers[1][0]
@@ -49,14 +66,15 @@ def draw_humans(npimg, humans, imgcopy=False,):
                 print "Observation Error: check if expression regarding both ears"
 
         #head pointing left (left eye hidden)
-        elif (16 in Centers.keys()):#head circle if right eye is present + faceline
+        elif rear:#head circle if right eye is present + faceline
             try:
-                rx = Centers[16][0]
-                dx = (Centers[15][0]-Centers[14][0])/4#dist between eyes
+                rx = Centers[16][0]          
+                dx = int((Centers[15][0]-Centers[14][0])/4)#dist between eyes
                 earringsxr = (rx+Centers[1][0])/2
                 earringsy = (Centers[0][1]+Centers[1][1])/2 #neck nose mid
 
-                hx = rx+abs(rx-Centers[15][0])/2 #- dx*20 / (rx-Centers[15][0])) #Jacob's magic circle coord (next to ear)
+                hx = rx+abs(rx-Centers[15][0])/2 #- dx*20 / (rx-Centers[15][0]))
+                #Jacob's magic circle coord (next to ear) ?? wtf. 
                 hy = int((Centers[16][1]+Centers[15][1])/2-dx*3.5)
                 limblen = int((dx+abs(rx-Centers[15][0])/2)*0.45)
                 cv2.circle(npimg, (hx,hy), int(abs(Centers[0][0]-rx)*0.8), col, thickness=limblen, lineType=8, shift=0)
@@ -66,9 +84,10 @@ def draw_humans(npimg, humans, imgcopy=False,):
 
             except:
                 print "Observation Error: left eye disappeared"
-        elif (17 in Centers.keys()):#head circle if right eye is present + faceline
+                
+        elif lear:#head circle if right eye is present + faceline
             try:
-                lx = Centers[17][0]
+                lx = lear[0] 
                 dx = int((Centers[15][0]-Centers[14][0])/4)
                 earringsxl = int((lx+Centers[1][0])/1.9)
                 earringsy = (Centers[0][1]+Centers[1][1])/2 #neck nose mid
@@ -82,6 +101,8 @@ def draw_humans(npimg, humans, imgcopy=False,):
 
             except:
                 print "Observation Error: right eye disappeared"
+    
+       
         #shoulder throat connection
         try:
             if (5 in Centers.keys())*(2 in Centers.keys()): #right shoulder to throat
