@@ -66,6 +66,9 @@ def draw_humans(npimg, humans, imgcopy=False,):
 
             except:
                 print "Observation Error: left eye disappeared"
+
+
+        #head pointing right (right eye hidden)
         elif (17 in Centers.keys()):#head circle if right eye is present + faceline
             try:
                 lx = Centers[17][0]
@@ -82,6 +85,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
 
             except:
                 print "Observation Error: right eye disappeared"
+
         #shoulder throat connection
         try:
             if (5 in Centers.keys())*(2 in Centers.keys()): #right shoulder to throat
@@ -114,4 +118,45 @@ def draw_humans(npimg, humans, imgcopy=False,):
         except:
             print "'T H I C C' Error: Your hips are missing"
         
+        try:
+            if (2 in Centers.keys())*(3 in Centers.keys()): #right hip
+                
+                bowy = Centers[3][1] #neck nose mid
+                bowx = int(Centers[3][0]) #neck nose mid
+                shouldx = Centers[2][0]
+                shouldy = Centers[2][1]
+                d = int(np.sqrt((bowy-shouldy)*(bowy-shouldy)+(bowx-shouldx)*(bowx-shouldx))/6)
+                cv2.line(npimg, (hipx+d,hipy+d), (shouldx+d,shouldy+d) , col, limblen)
+
+                cv2.line(npimg, (hipx-d,hipy-d), (shouldx-d,shouldy-d) , col, limblen)
+            '''if (5 in Centers.keys())*(6 in Centers.keys()): #left hip
+                y = Centers[11][1] #neck nose mid
+                x = int(Centers[11][0]) #neck nose mid
+                shouldx = Centers[5][0]
+                shouldy = Centers[5][1]                    
+                cv2.line(npimg, (hipx,hipy), (shouldx,shouldy) ,col, limblen)
+            '''
+        except:
+            print "A"
+            Nose = 0
+    '''        
+    Neck = 1
+    RShoulder = 2
+    RElbow = 3
+    RWrist = 4
+    LShoulder = 5
+    LElbow = 6
+    LWrist = 7
+    RHip = 8
+    RKnee = 9
+    RAnkle = 10
+    LHip = 11
+    LKnee = 12
+    LAnkle = 13
+    REye = 14
+    LEye = 15
+    REar = 16
+    LEar = 17
+    Background = 18
+    '''
     return npimg, centers
