@@ -45,9 +45,7 @@ if __name__ == '__main__':
         #imgrad = (cv2.cvtColor(image0, cv2.COLOR_BGR2GRAY)+1.) - (cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
         
         humans = e.inference(image)
-
         image2,centers = draw_humans(image, humans,imgcopy=False)
-
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
 
         edges = cv2.Canny(image,150,120)
