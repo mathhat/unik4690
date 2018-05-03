@@ -112,6 +112,6 @@ def draw_humans(npimg, humans, imgcopy=False,):
                 shouldy = Centers[5][1]                    
                 cv2.line(npimg, (hipx,hipy), (shouldx,shouldy) ,col, limblen)
         except:
-            print "'T H I C C' Error: Your hips are missing"
+            print "'T H I C C' Error: Your hips are missing (lies)"
         
     return npimg, centers
