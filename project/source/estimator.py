@@ -90,11 +90,11 @@ class PoseEstimator:
     heatmap_gaussian = False
     adaptive_threshold = False
 
-    NMS_Threshold = 0.05#0.15
+    NMS_Threshold = 0.15#0.15
     Local_PAF_Threshold = 0.2
     PAF_Count_Threshold = 5
     Part_Count_Threshold = 15
-    Part_Score_Threshold = 0.1#2.#4.5
+    Part_Score_Threshold = 4.5#2.#4.5
 
     PartPair = namedtuple('PartPair', [
         'score',

@@ -1,13 +1,11 @@
 import cv2
 import numpy as np
  
-def human_canny(edges,im_bw):
-
-    
+def human_canny(edges,im_bw,tol):
     edges = np.multiply(edges,im_bw)
-    edges = cv2.threshold(edges, 150, 255, cv2.CV_8UC1,cv2.THRESH_OTSU)[1]
+    edges = cv2.threshold(edges, tol, 255, cv2.CV_8UC1)[1]
     edges = np.asarray(edges,dtype=np.uint8)
-    edges, contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    edges, contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     
     
     '''

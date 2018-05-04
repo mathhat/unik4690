@@ -11,7 +11,6 @@ def draw_humans(npimg, humans, imgcopy=False,):
     npimg = npimg*0
     image_h, image_w = npimg.shape[:2]
     centers = {}
-    limblen = 45
     col=[255,255,255]
     for human in humans:
         # draw point
@@ -69,9 +68,9 @@ def draw_humans(npimg, humans, imgcopy=False,):
             earringsxl = int((lx+nx)/1.95)
             earringsxr = int((rx+nx)/2.05)  
             earringsy = (nose[1]+neck[1])/2 #neck nose mid
-            limblen= int(dx/3.5)
-            cv2.circle(npimg, (hx,hy), int(abs(dx*0.5)), col, thickness=limblen, lineType=8, shift=0)
-            limblen=dx/4
+            limblen= int(dx/4)
+            cv2.circle(npimg, (hx,hy), int(abs(dx*0.55)), col, thickness=limblen, lineType=8, shift=0)
+            limblen=dx/8
             cv2.line(npimg, (lx,lear[1]), (earringsxl,earringsy) , col, limblen)
             cv2.line(npimg, (rx,rear[1]), (earringsxr,earringsy) , col, limblen)
 
@@ -85,8 +84,8 @@ def draw_humans(npimg, humans, imgcopy=False,):
             hx = rx+dx*4 #- dx*20 / (rx-leye[0]))
             #Jacob's magic circle coord (next to ear) ?? wtf. fight me
             hy = int((rear[1]+leye[1])/2-dx*3.5)
-            limblen = int((dx+abs(rx-leye[0])/2)*0.55)
-            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*0.8), col, thickness=limblen, lineType=8, shift=0)
+            limblen = int((dx+abs(rx-leye[0])/2)*0.4)
+            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*0.7), col, thickness=limblen, lineType=8, shift=0)
             limblen = dx
             cv2.line(npimg, (leye[0]+dx,leye[1]), (leye[0]+dx,(nose[1]+neck[1])/2) , col, limblen)
             cv2.line(npimg, (rx,rear[1]), (earringsxr,earringsy) , col,limblen)
@@ -100,9 +99,9 @@ def draw_humans(npimg, humans, imgcopy=False,):
             earringsy = (nose[1]+neck[1])/2 #neck nose mid
             hx = lx - dx*4 #+ dx*20. /(lx-reyex))#circle center, next to ear
             hy = int((lear[1]+reye[1])/2-dx*3.5)               #circle center, slightly above ear
-            limblen = int((abs(lx-reyex)/2+dx)*0.55)
-            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*0.8), col, thickness=limblen, lineType=8, shift=0)
-            limblen=2*dx
+            limblen = int((abs(lx-reyex)/2+dx)*0.4)
+            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*0.7), col, thickness=limblen, lineType=8, shift=0)
+            limblen= dx
             cv2.line(npimg, (reyex+dx,reye[1]), (reyex+dx,(nose[1]+neck[1])/2) , col, limblen)
             cv2.line(npimg, (lx,reye[1]), (earringsxl,earringsy) ,col, limblen)
     
@@ -112,7 +111,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             #right shoulder to throat    
             throaty = (nose[1]+neck[1])/2 #neck nose mid
             throatx = (nose[0]+neck[0])/2 #neck nose mid
-            limblen = int(abs(rshould[0]-lshould[0]))/6
+            limblen = int(abs(rshould[0]-lshould[0]))/12
             #left shoulder to throat
             cv2.line(npimg, (rshould[0],rshould[1]-limblen/2), (throatx,throaty) , col, limblen)
             cv2.line(npimg, (lshould[0],lshould[1]-limblen/2), (throatx,throaty) , col, limblen)
@@ -124,13 +123,15 @@ def draw_humans(npimg, humans, imgcopy=False,):
             hipx = rhip[0] #neck nose mid
             shouldx = rshould[0]
             shouldy = rshould[1]
+            limblen = int(np.sqrt( (shouldx-hipx)*(shouldx-hipx)+(shouldy-hipy)*(shouldy-hipy)))/10
             cv2.line(npimg, (hipx,hipy), (shouldx,shouldy) , col, limblen)
 
         if lhip and lshould: #left hip
             hipy = lhip[1] #neck nose mid
             hipx = lhip[0] #neck nose mid
             shouldx = lshould[0]
-            shouldy = lshould[1]                    
+            shouldy = lshould[1]
+            limblen = int(np.sqrt( (shouldx-hipx)*(shouldx-hipx)+(shouldy-hipy)*(shouldy-hipy)))/10             
             cv2.line(npimg, (hipx,hipy), (shouldx,shouldy) ,col, limblen)
 
         if relb and rshould: #right bicep
@@ -140,7 +141,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             shouldx = rshould[0]
             shouldy = rshould[1]
             d = int(np.sqrt((bowy-shouldy)*(bowy-shouldy)+(bowx-shouldx)*(bowx-shouldx))/10)
-            limblen = d*2
+            limblen = d
             cv2.line(npimg, (shouldx+2*d,shouldy+2*d), (bowx+2*d,bowy+2*d) , col, limblen)
             cv2.line(npimg, (shouldx-d,shouldy-d) ,(bowx-d,bowy-d), col,limblen)
 
@@ -151,7 +152,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             shouldx = lshould[0]
             shouldy = lshould[1]
             d = int(np.sqrt((bowy-shouldy)*(bowy-shouldy)+(bowx-shouldx)*(bowx-shouldx))/10)
-            limblen = d*2
+            limblen = d
             cv2.line(npimg, (bowx+d,bowy-d), (shouldx+2*d,shouldy-d) , col, limblen)
             cv2.line(npimg, (bowx-d,bowy+2*d), (shouldx-d,shouldy+2*d) , col, limblen)
 
@@ -165,7 +166,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             d = int(np.sqrt((dy)*(dy)+(dx)*(dx)))
             normal = np.array([-dy/d,dx/d])*d/5.
             
-            limblen = d/5
+            limblen = d/8
 
 
             cv2.line(npimg, (bowx+int(normal[0]),bowy+int(normal[1])), (wristx+int(normal[0]),wristy+int(normal[1])) , col,limblen)
@@ -181,7 +182,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             d = int(np.sqrt((dy)*(dy)+(dx)*(dx)))
             normal = np.array([-dy/d,dx/d])*d/5.
             
-            limblen = d/5
+            limblen = d/8
 
 
             cv2.line(npimg, (bowx+int(normal[0]),bowy+int(normal[1])), (wristx+int(normal[0]),wristy+int(normal[1])) , col,limblen)
@@ -198,7 +199,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             d = int(np.sqrt((dy)*(dy)+(dx)*(dx)))
             normal = np.array([-dy/d,dx/d])*d/5.
             
-            limblen = d/5
+            limblen = d/7
 
 
             cv2.line(npimg, (hipx+int(normal[0]),hipy+int(normal[1])), (kx+int(normal[0]),ky+int(normal[1])) , col,limblen)
@@ -215,7 +216,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             d = int(np.sqrt((dy)*(dy)+(dx)*(dx)))
             normal = np.array([-dy/d,dx/d])*d/5.
             
-            limblen = d/5
+            limblen = d/7
 
 
             cv2.line(npimg, (hipx+int(normal[0]),hipy+int(normal[1])), (kx+int(normal[0]),ky+int(normal[1])) , col,limblen)
@@ -232,7 +233,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             d = int(np.sqrt((dy)*(dy)+(dx)*(dx)))
             normal = np.array([-dy/d,dx/d])*d/5.
             
-            limblen = d/5
+            limblen = d/7
 
 
             cv2.line(npimg,  (kx+int(normal[0]),ky+int(normal[1])),(ax+int(normal[0]),ay+int(normal[1])) , col,limblen)
@@ -249,7 +250,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             d = int(np.sqrt((dy)*(dy)+(dx)*(dx)))
             normal = np.array([-dy/d,dx/d])*d/5.
             
-            limblen = d/5
+            limblen = d/7
 
 
             cv2.line(npimg,  (kx+int(normal[0]),ky+int(normal[1])),(ax+int(normal[0]),ay+int(normal[1])) , col,limblen)
