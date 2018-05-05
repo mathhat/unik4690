@@ -48,24 +48,26 @@ if __name__ == '__main__':
         image2,centers = draw_humans(image, humans,imgcopy=False)
         
         
-        edges = cv2.Canny(image,50,150)
+        edges = cv2.Canny(image,50,100)
         
         kernel = np.ones((2,2),np.int8)
         kernel2 = np.ones((4,4),np.int8)
         #image2 = cv2.GaussianBlur(image2,(51,51),100)
-        image2 = cv2.GaussianBlur(image2,(25,25),10)
-        image2 = cv2.GaussianBlur(image2,(25,25),10)
-        
-        image2 = cv2.GaussianBlur(image2,(25,25),10)
+        image2 = cv2.GaussianBlur(image2,(15,15),10)
+        image2 = cv2.GaussianBlur(image2,(15,15),10)
+        #image2 = cv2.GaussianBlur(image2,(25,25),10)
+
+        #image2 = cv2.GaussianBlur(image2,(25,25),10)
         
         
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
         
         if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
-            contours = human_canny(edges,image2,tol=90)#returns contours
+            contours = human_canny(edges,image2,tol=140)#returns contours
             
-            image = cv2.drawContours(image*0, contours, -1, (255,255,255), 3)
-            image = cv2.erode(image,kernel)          
+            image = cv2.drawContours(image*0, contours, -1, (255,255,255), 1)
+            image = cv2.dilate(image,kernel)          
+            #image = cv2.erode(image,kernel2)          
        
 
             cv2.putText(image,
@@ -74,6 +76,7 @@ if __name__ == '__main__':
                         (0, 0, 255), 2)
                     
             cv2.imshow('tf-pose-estimation result', image)
+
             
         #cv2.imshow('tf-pose-estimation result', image2)
 

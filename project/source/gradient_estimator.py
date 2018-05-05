@@ -8,12 +8,13 @@ def human_canny(edges,im_bw,tol):
     edges, contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     
     
-    '''
-    print contours[0]
-    for i in xrange(len(contours)):
-        if len(contours[i])<40:
-            contours[i]*=0
-    '''
+    
+    #print contours[0]
+    if len(contours)>1:
+        for i in xrange(len(contours)):
+            if len(contours[i])<30:
+                contours[i]*=0
+    
 
     '''
     try:
