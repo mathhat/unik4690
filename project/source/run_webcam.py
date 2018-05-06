@@ -39,6 +39,8 @@ if __name__ == '__main__':
     e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h))
     cam = cv2.VideoCapture(args.camera)
     ret_val, image0 = cam.read()
+    edges0 = cv2.Canny(image0,50,50)
+
     #humans = e.inference(image)
     while True:
         ret_val, image = cam.read()
@@ -48,37 +50,28 @@ if __name__ == '__main__':
         image2,centers = draw_humans(image, humans,imgcopy=False)
         
         
-        edges = cv2.Canny(image,50,50)
-        
-        kernel = np.ones((2,2),np.int8)
-        kernel2 = np.ones((4,4),np.int8)
-        #image2 = cv2.GaussianBlur(image2,(51,51),100)
-        #image2 -= cv2.GaussianBlur(image2,(15,15),10)
-        
-        #image2 = cv2.GaussianBlur(image2,(15,15),10)
-        image2 += cv2.GaussianBlur(image2,(25,25),0)
+        edges = cv2.Canny(image,200,100)
+        im = edges0-edges
 
+        kernel = np.zeros((3,3),np.int8)
+        
+        
+        kernel2 = np.ones((4,4),np.int8)
+        #image2 = cv2.GaussianBlur(image2,(15,15),0)
         image2 = cv2.GaussianBlur(image2,(15,15),0)
-        
-        
+        im = cv2.GaussianBlur(im,(5,5),0)/255.
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
         
         if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
-            image = human_canny(edges,image2,kernel,kernel2,tol=140)#returns contours
-            
-            #image = cv2.drawContours(image*0, contours, -1, (255,255,255), 1)
-            #image = cv2.dilate(image,kernel)          
-            #image = cv2.erode(image,kernel2)          
-            #image = cv2.erode(image,kernel)  
-
+            image3 = human_canny(edges,im,image2,kernel,kernel2,tol=50)#returns contours
 
             cv2.putText(image,
                         "FPS: %f" % (1.0 / (time.time() - fps_time)),
                         (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                         (0, 0, 255), 2)
                     
-            cv2.imshow('tf-pose-estimation result', image)
-
+            cv2.imshow('tf-pose-estimation result', image3)
+        
          
         #cv2.imshow('tf-pose-estimation result', image2)
 
@@ -86,4 +79,6 @@ if __name__ == '__main__':
         if cv2.waitKey(1) == 27:
             break
         #image0 = cam.read()[1]
+        edges0 = cv2.Canny(image,200,100)
+
     cv2.destroyAllWindows()

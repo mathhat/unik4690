@@ -1,32 +1,32 @@
 import cv2
 import numpy as np
  
-def human_canny(edges,im_bw,kernel,kernel2,tol):
-    edges = np.multiply(edges,im_bw)
-    edges = cv2.threshold(edges, tol, 255, cv2.CV_8UC1)[1]
+def human_canny(edges,im,im_bw,kernel,kernel2,tol):
+    #edges = np.multiply(edges,im_bw)
+    edges1 = np.multiply(im_bw*255,im)/255.
+    edges = np.multiply(edges,edges1)
     edges = np.asarray(edges,dtype=np.uint8)
     edges, contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    image = cv2.drawContours(im_bw*0, contours, -1, (255,255,255), 1)/255.
-    image = cv2.dilate(image,kernel)          
-    image = cv2.erode(image,kernel2)          
-    image = cv2.filter2D(image,-1,kernel2)
-    image = cv2.filter2D(image,-1,kernel2)
-    image = cv2.filter2D(image,-1,kernel2)
-    image = cv2.filter2D(image,-1,kernel2)
-    image = cv2.filter2D(image,-1,kernel2)
+    #image = cv2.dilate(image,kernel)          
+    #image = cv2.erode(image,kernel2)          
+    #image = cv2.filter2D(image,-1,kernel2)
+    #image = cv2.filter2D(image,-1,kernel2)
+    #image = cv2.filter2D(image,-1,kernel2)
+    #image = cv2.filter2D(image,-1,kernel2)
+    #image = cv2.filter2D(image,-1,kernel2)
     
-    image *=edges
-    image = cv2.dilate(image,kernel)          
+    #image *=edges
+    #image = cv2.dilate(image,kernel)          
     #image = cv2.dilate(image,kernel)          
 
     
-    '''
+    
     #print contours[0]
     if len(contours)>1:
         for i in xrange(len(contours)):
-            if len(contours[i])<30:
+            if len(contours[i])<6:
                 contours[i]*=0
-    '''
+    image = cv2.drawContours(im_bw*0, contours, -1, (255,255,255), 1)/255.
 
     '''    
     #im = im_bw*0 #weird
