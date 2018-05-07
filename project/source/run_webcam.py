@@ -39,7 +39,7 @@ if __name__ == '__main__':
     e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h))
     cam = cv2.VideoCapture(args.camera)
     ret_val, image0 = cam.read()
-    edges0 = cv2.Canny(image0,50,50)
+    edges0 = cv2.Canny(image0,100,100)
 
     #humans = e.inference(image)
     while True:
@@ -49,13 +49,13 @@ if __name__ == '__main__':
         humans = e.inference(image)
         image2,centers = draw_humans(image, humans,imgcopy=False)
         
-        
-        edges = cv2.Canny(image,200,100)
+        kernel = np.ones((2,2))
+        #kernel[1,1] = 0
+        edges = cv2.Canny(image,100,100)
         im = edges0-edges
+        im = cv2.medianBlur(im,3)
+        #im = cv2.bilateralFilter(im,3,75,75)
 
-        kernel = np.zeros((3,3),np.int8)
-        
-        
         kernel2 = np.ones((4,4),np.int8)
         #image2 = cv2.GaussianBlur(image2,(15,15),0)
         image2 = cv2.GaussianBlur(image2,(15,15),0)
@@ -63,7 +63,7 @@ if __name__ == '__main__':
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
         
         if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
-            image3 = human_canny(edges,im,image2,kernel,kernel2,tol=50)#returns contours
+            image3 = human_canny(edges,im,image2,kernel,kernel2,tol=20)#returns contours
 
             cv2.putText(image,
                         "FPS: %f" % (1.0 / (time.time() - fps_time)),
@@ -73,12 +73,12 @@ if __name__ == '__main__':
             cv2.imshow('tf-pose-estimation result', image3)
         
          
-        #cv2.imshow('tf-pose-estimation result', image2)
+        #cv2.imshow('tf-pose-estimation result', im)
 
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
             break
         #image0 = cam.read()[1]
-        edges0 = cv2.Canny(image,200,100)
+        edges0 = cv2.Canny(image,100,100)
 
     cv2.destroyAllWindows()
