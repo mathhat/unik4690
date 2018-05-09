@@ -22,3 +22,15 @@ def human_canny(edges,im_bw,tol):
     #im_bw, contours, hierarchy = cv2.findContours(im_bw, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     
     return contours
+
+
+"""
+def hull_generation_code():
+    import sys 
+    hull = np.array(contours.size())
+    module = sys.modules[__name__]
+    for i in range(len(contours)):
+        if (cv2.contourArea(contours[i])) > 0: 
+            setattr(module, "hull_%s"%i, cv2.convexHull(contours[i]))
+
+"""
