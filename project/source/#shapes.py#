@@ -1,13 +1,11 @@
 # -*- coding:utf-8 -*-
 """
 Generell gruppe med funksjoner for å tegne konvekse 
-former. 
-
-Anta at vi har et sett punkter som gir en relativt presis posisjon 
-av et legeme, men har støy i samplingen. 
-To teknikker her er :
-1. Redusere støy som frekvenser av en beskrivende funksjon/polynom 
-2. sample ytterpunkter for å finne enkleste beskrivende "kanter" 
+former
+Input: IMG, 
+Output: IMG w shapes on them
 """
+import cv2
+import numpy as np
 
 
