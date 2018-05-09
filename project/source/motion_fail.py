@@ -38,27 +38,39 @@ if __name__ == '__main__':
     w, h = model_wh(args.resolution)
     e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h))
     cam = cv2.VideoCapture(args.camera)
+    ret_val, image0 = cam.read()
+    edges0 = cv2.Canny(image0,80,80)
     ret_val, image = cam.read()
-
-    kernel = np.ones((2,2))
-    kernel2 = np.ones((4,4))
+    edges = cv2.Canny(image,80,80)
+    im0 = edges0-edges
+    im0 = cv2.medianBlur(im0,3)
+    im0 = cv2.GaussianBlur(im0,(5,5),0)/255.
 
     #humans = e.inference(image)
     while True:
         ret_val, image = cam.read()
+        #imgrad = (cv2.cvtColor(image0, cv2.COLOR_BGR2GRAY)+1.) - (cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
         
         humans = e.inference(image)
         image2,centers = draw_humans(image, humans,imgcopy=False)
+        
+        kernel = np.ones((2,2))
+        kernel2 = np.ones((4,4),np.int8)
         edges = cv2.Canny(image,80,80)
+        im =(edges0-edges)
+        im = cv2.medianBlur(im,3)
         #im = cv2.bilateralFilter(im,3,75,75)
+        image2 = cv2.Canny(image,100,100)
         image2 = cv2.GaussianBlur(image2,(31,31),100)
-
         #image2 = cv2.GaussianBlur(image2,(15,15),0)
-
-        image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
+        im = cv2.GaussianBlur(im,(5,5),0)/255.
+        im*=edges/255.
+        im += im0
+        im/=2
+        #image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
         
         if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
-            contours = human_canny(edges,image2,kernel,kernel2,tol=20)#returns contours
+            contours = human_canny(edges,im,image2,kernel,kernel2,tol=20)#returns contours
 
             cv2.putText(image,
                         "FPS: %f" % (1.0 / (time.time() - fps_time)),
@@ -74,4 +86,8 @@ if __name__ == '__main__':
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
             break
+        #image0 = cam.read()[1]
+        edges0 = edges
+        im -= im0
+        im0 = im
     cv2.destroyAllWindows()
