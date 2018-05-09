@@ -28,7 +28,7 @@ logger.addHandler(ch)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tf-pose-estimation run')
-    parser.add_argument('--image', type=str, default='Images/2018-05-09-162200.jpg')  #../images/p2.jpg')
+    parser.add_argument('--image', type=str, default='Images/1.jpg')  #../images/p2.jpg')
     parser.add_argument('--resolution', type=str, default='432x368', help='network input resolution. default=432x368')
     parser.add_argument('--model', type=str, default='mobilenet_thin', help='cmu / mobilenet_thin')
     parser.add_argument('--scales', type=str, default='[None]', help='for multiple scales, eg. [1.0, (1.1, 0.05)]')
@@ -53,11 +53,11 @@ if __name__ == '__main__':
     edges = cv2.Canny(image,tol,tol2)
 
     if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
-            contours = human_canny(edges,image2,kernel,kernel2,tol=20)#returns contours
+            contours = human_canny(edges,image2,tol)#returns contours
             image = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)/255.
             fps_time = time.time()
             cv2.putText(image,
-                        "FPS: %f" % (1.0 / ( fps_time-time.time())),
+                        "FPS: %f" % (1.0 / (fps_time-t)),
                         (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                         (0, 0, 255), 2)
 

@@ -58,8 +58,8 @@ if __name__ == '__main__':
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
         
         if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
-            contours = human_canny(edges,image2,kernel,kernel2,tol=20)#returns contours
-            image = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)/255.
+            contours = human_canny(edges,image2)#returns contours
+            image = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)/255.#draws contours
 
             cv2.putText(image,
                         "FPS: %f" % (1.0 / (time.time() - fps_time)),

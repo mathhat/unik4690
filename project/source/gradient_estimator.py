@@ -1,9 +1,7 @@
 import cv2
 import numpy as np
- 
-def human_canny(edges,im_bw,kernel,kernel2,tol):
+def human_canny(edges,im_bw,tol):
     edges2 = np.multiply(im_bw,edges)
-    #edges3 = np.multiply(im,edges3)
 
 
     edges = np.asarray(edges2,dtype=np.uint8)
@@ -11,10 +9,7 @@ def human_canny(edges,im_bw,kernel,kernel2,tol):
     #image = cv2.dilate(image,kernel)          
     #image = cv2.erode(image,kernel2)          
     #image = cv2.filter2D(image,-1,kernel2)
-   
-    
-    
-    #print contours[0]
+
     if len(contours)>1:
         for i in xrange(len(contours)):
             if len(contours[i])<tol:
