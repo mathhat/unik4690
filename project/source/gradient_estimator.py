@@ -9,12 +9,17 @@ def human_canny(edges,im_bw,tol):
     #image = cv2.dilate(image,kernel)          
     #image = cv2.erode(image,kernel2)          
     #image = cv2.filter2D(image,-1,kernel2)
-    max_ = 0
-    ind = 0
+    i = 0
     if len(contours)>1:
-        for i in xrange(len(contours)):
-            if len(contours[i])<tol:
-                contours[i]*=0
+        while 1: 
+            try:
+                if len(contours[i])<tol:
+                    del contours[i]
+                else:
+                    i+=1
+            except:
+                break
+
 
     
     #im_bw = cv2.threshold(im_bw, 0, 255, cv2.CV_8UC1)[1]

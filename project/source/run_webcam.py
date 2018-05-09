@@ -54,7 +54,7 @@ if __name__ == '__main__':
     tol1 /= i
     tol2 /= i
     tol  /= i
-
+    print tol1,tol2,tol
     #humans = e.inference(image)
     while True:
         ret_val, image = cam.read()
@@ -63,7 +63,7 @@ if __name__ == '__main__':
         image2,centers = draw_humans(image, humans,imgcopy=False)
         edges = cv2.Canny(image,tol1,tol2)
         #im = cv2.bilateralFilter(im,3,75,75)
-        image2 = cv2.GaussianBlur(image2,(31,31),100)
+        image2 = cv2.GaussianBlur(image2,(21,21),100,)
 
         #image2 = cv2.GaussianBlur(image2,(15,15),0)
 
