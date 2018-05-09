@@ -1,0 +1,5 @@
+Canny1  Canny2  ContourLength
+184 116 97
+328 89 122
+130 146 117
+88 59 124

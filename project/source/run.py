@@ -34,36 +34,52 @@ if __name__ == '__main__':
     parser.add_argument('--scales', type=str, default='[None]', help='for multiple scales, eg. [1.0, (1.1, 0.05)]')
     args = parser.parse_args()
     scales = ast.literal_eval(args.scales)
+    
+    def nothing(x):
+        pass
 
     w, h = model_wh(args.resolution)
     e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h))
 
     kernel = np.ones((2,2))
     kernel2 = np.ones((4,4))
-    tol = 100
-    tol2 = 100
-
+    tol1 = 500
+    tol2 = 50
+    tol = 20
     # estimate human poses from a single image !
     image = common.read_imgfile(args.image, None, None)
-    t = time.time()
+    cv2.namedWindow('image')
+    # Create a black image, a window
+    # create trackbars for color change
+    cv2.createTrackbar('canny1','image',0,500,nothing)
+    cv2.createTrackbar('canny2','image',0,500,nothing)
+    cv2.createTrackbar('Contour Length','image',0,500,nothing)
     humans = e.inference(image, scales=scales)
     image2,centers = draw_humans(image, humans, imgcopy=False)
     image2 = cv2.GaussianBlur(image2,(31,31),100)
     image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
-    edges = cv2.Canny(image,tol,tol2)
 
     if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
+
+        #cv2.imshow('image',img)
+        
+        # get current positions of four trackbars
+
+        while(1):
+
+
+            tol1 = cv2.getTrackbarPos('canny1','image')
+            tol2 = cv2.getTrackbarPos('canny2','image')
+            tol = cv2.getTrackbarPos('Contour Length','image')
+            edges = cv2.Canny(image,tol1,tol2)
             contours = human_canny(edges,image2,tol)#returns contours
-            image = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)/255.
-            fps_time = time.time()
-            cv2.putText(image,
-                        "FPS: %f" % (1.0 / (fps_time-t)),
-                        (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                        (0, 0, 255), 2)
+            image3 = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)/255.
 
-            cv2.imshow('tf-pose-estimation result', image)
-            cv2.waitKey()
+            cv2.imshow('image', image3)
+            k = cv2.waitKey(1) & 0xFF
+            if k == 27:
+                break
 
-    # image = cv2.fastNlMeansDenoisingColored(image, None, 10, 10, 7, 21)
-
-    # cv2.imshow('tf-pose-estimation result', image)
+    cv2.destroyAllWindows()
+    with open('thresdata.txt','a') as File:
+        File.write("\n %d %d %d"%(tol1,tol2,tol))

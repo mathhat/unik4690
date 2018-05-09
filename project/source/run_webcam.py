@@ -42,6 +42,18 @@ if __name__ == '__main__':
 
     kernel = np.ones((2,2))
     kernel2 = np.ones((4,4))
+    tol=tol1=tol2=i = 0
+    with open('thresdata.txt','r') as File:
+        File.readline()
+        for line in File:
+            l = map(int,line.split(' '))
+            tol1 += l[0]
+            tol2 += l[1]
+            tol  += l[2]
+            i+=1
+    tol1 /= i
+    tol2 /= i
+    tol  /= i
 
     #humans = e.inference(image)
     while True:
@@ -49,7 +61,7 @@ if __name__ == '__main__':
         
         humans = e.inference(image)
         image2,centers = draw_humans(image, humans,imgcopy=False)
-        edges = cv2.Canny(image,80,80)
+        edges = cv2.Canny(image,tol1,tol2)
         #im = cv2.bilateralFilter(im,3,75,75)
         image2 = cv2.GaussianBlur(image2,(31,31),100)
 
@@ -58,7 +70,7 @@ if __name__ == '__main__':
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
         
         if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
-            contours = human_canny(edges,image2)#returns contours
+            contours = human_canny(edges,image2,tol)#returns contours
             image = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)/255.#draws contours
 
             cv2.putText(image,
