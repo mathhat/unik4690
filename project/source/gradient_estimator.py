@@ -20,11 +20,14 @@ def human_canny(edges,im_bw,tol):
     
     return contours
 
+
 """
-import sys 
-module = sys.modules[__name__]
-for i in range(len(contours)):
-    if (cv2.contourArea(contours[i])) > 0: 
-        setattr(module, "hull_%s"%i, cv2.convexHull(contours[i]))
+def hull_generation_code():
+    import sys 
+    hull = np.array(contours.size())
+    module = sys.modules[__name__]
+    for i in range(len(contours)):
+        if (cv2.contourArea(contours[i])) > 0: 
+            setattr(module, "hull_%s"%i, cv2.convexHull(contours[i]))
 
 """
