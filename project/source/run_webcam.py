@@ -59,12 +59,12 @@ if __name__ == '__main__':
         
         if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
             contours = human_canny(edges,image2,kernel,kernel2,tol=20)#returns contours
+            image = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)/255.
 
             cv2.putText(image,
                         "FPS: %f" % (1.0 / (time.time() - fps_time)),
                         (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                         (0, 0, 255), 2)
-            image = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)/255.
 
             cv2.imshow('tf-pose-estimation result', image)
         
