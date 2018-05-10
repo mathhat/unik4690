@@ -82,7 +82,7 @@ if __name__ == '__main__':
     #try:
     while(1):
         image2 = np.copy(image)
-        image2,centers = draw_humans(image2, humans,0,k)
+        image2,centers = draw_humans(image2, humans,1)
         if headbol:
             minusswitch = cv2.getTrackbarPos('minusk3k4', 'image')
             k1 = cv2.getTrackbarPos('k1_headsize','image')*0.01
@@ -96,7 +96,7 @@ if __name__ == '__main__':
             k6 = cv2.getTrackbarPos('k6_earring_width','image')*0.01
             k7 = cv2.getTrackbarPos('k7_headx','image')*0.01
             k8 = cv2.getTrackbarPos('k8_earringx','image')*0.01
-        k =[k1,k2,k3,k4,k5,k6,k7,k8]
+            k =[k1,k2,k3,k4,k5,k6,k7,k8]
         #image2 = cv2.GaussianBlur(image2,(31,31),100)
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/2#/255.
 
