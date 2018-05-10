@@ -2,16 +2,17 @@
 import common
 import cv2
 import numpy as np
+import read
 
-    
 
-def draw_humans(npimg, humans, imgcopy=False,):
-    if imgcopy:
-        npimg = np.copy(npimg)
-    npimg = npimg*0
+def draw_humans(npimg, humans,k1=0,k2=0,k3=0,k4=0,k5=0,k6=0,k7=0,k8=0):
+    npimg *=0
     image_h, image_w = npimg.shape[:2]
     centers = {}
     col=[255,255,255]
+    k1,k2,k6 = read.k1()
+    k3,k4,k5,k7,k8 = read.k2()
+    
     for human in humans:
         # draw point
         
@@ -64,13 +65,13 @@ def draw_humans(npimg, humans, imgcopy=False,):
             dx = int(np.linalg.norm(np.array(lear)-np.array(rear)))
             #^relation for headsize, distance between ears
             nx = neck[0] 
-            hy =  int((rear[1]+lear[1])/2-dx/2.7) #nope  #fight me
-            earringsxl = int((lx+nx)/1.95)
-            earringsxr = int((rx+nx)/2.05)  
+            hy =  int((rear[1]+lear[1])/2-dx/k2) #nope  #fight me
+            earringsxl = int((lx+nx)/2.)
+            earringsxr = int((rx+nx)/2.)  
             earringsy = (nose[1]+neck[1])/2 #neck nose mid
             limblen= int(dx/4)+1
-            cv2.circle(npimg, (hx,hy), int(abs(dx*0.55)), col, thickness=limblen, lineType=8, shift=0)
-            limblen=dx/8+1
+            cv2.circle(npimg, (hx,hy), int(abs(dx*k1)), col, thickness=-limblen, lineType=8, shift=0)
+            limblen= int((dx/8+1)*k6)
             cv2.line(npimg, (lx,lear[1]), (earringsxl,earringsy) , col, limblen)
             cv2.line(npimg, (rx,rear[1]), (earringsxr,earringsy) , col, limblen)
 
@@ -81,29 +82,29 @@ def draw_humans(npimg, humans, imgcopy=False,):
             earringsxr = (rx+neck[0])/2
             earringsy = (nose[1]+neck[1])/2 #neck nose mid
 
-            hx = rx+dx*4 #- dx*20 / (rx-leye[0]))
+            hx = int(rx+dx*4*k7) #- dx*20 / (rx-leye[0]))
             #Jacob's magic circle coord (next to ear) ?? wtf. fight me
-            hy = int((rear[1]+leye[1])/2-dx*3.5)
+            hy = int((rear[1]+leye[1])/2+dx*k3)
             limblen = int((dx+abs(rx-leye[0])/2)*0.4)+1
-            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*0.7), col, thickness=limblen, lineType=8, shift=0)
-            limblen = dx+1
+            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*k4), col, thickness=-limblen, lineType=8, shift=0)
+            limblen = int((dx+1)*k5)
             cv2.line(npimg, (leye[0]+dx,leye[1]), (leye[0]+dx,(nose[1]+neck[1])/2) , col, limblen)
-            cv2.line(npimg, (rx,rear[1]), (earringsxr,earringsy) , col,limblen)
+            cv2.line(npimg, (rx-int(dx*k8),rear[1]), (earringsxr-int(dx*k8),earringsy) , col,limblen)
 
                 
         elif lear and neck and reye and nose:#head circle if left ear is present + faceline
             lx = lear[0]
             reyex = reye[0] 
             dx = abs(lx-reyex)/10+1
-            earringsxl = int((lx+neck[0])/1.9)
+            earringsxl =(lx+neck[0])/2
             earringsy = (nose[1]+neck[1])/2 #neck nose mid
-            hx = lx - dx*4 #+ dx*20. /(lx-reyex))#circle center, next to ear
-            hy = int((lear[1]+reye[1])/2-dx*3.5)               #circle center, slightly above ear
-            limblen = int((abs(lx-reyex)/2+dx)*0.4)+1
-            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*0.7), col, thickness=limblen, lineType=8, shift=0)
-            limblen= dx+1
+            hx = int(lx - dx*4*k7) #+ dx*20. /(lx-reyex))#circle center, next to ear
+            hy = int((lear[1]+reye[1])/2+dx*k3)               #circle center, slightly above ear
+            limblen = int((abs(lx-reyex)/2+dx)*k5)
+            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*k4), col, thickness=-limblen, lineType=8, shift=0)
+            limblen= int((dx+1)*k5)
             cv2.line(npimg, (reyex+dx,reye[1]), (reyex+dx,(nose[1]+neck[1])/2) , col, limblen)
-            cv2.line(npimg, (lx,reye[1]), (earringsxl,earringsy) ,col, limblen)
+            cv2.line(npimg, (lx+int(dx*k8),reye[1]), (earringsxl+int(dx*k8),earringsy) ,col, limblen)
     
         
         #shoulder throat connections

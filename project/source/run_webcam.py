@@ -5,8 +5,7 @@ import sys
 sys.path.append("/home/joe/Documents/tf-pose-estimation/src/") 
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 from gradient_estimator import human_canny 
-#from draw import draw_humans
-
+import read
 import cv2
 import numpy as np
 
@@ -42,27 +41,17 @@ if __name__ == '__main__':
 
     kernel = np.ones((2,2))
     kernel2 = np.ones((4,4))
-    tol=tol1=tol2=i = 0
-    with open('thresdata.txt','r') as File:
-        File.readline()
-        for line in File:
-            l = map(int,line.split(' '))
-            tol1 += l[0]
-            tol2 += l[1]
-            tol  += l[2]
-            i+=1
-    tol1 /= i
-    tol2 /= i
-    tol  /= i
-    print tol1,tol2,tol
+
+    tol1,tol2,tol = read.Tol()
     #humans = e.inference(image)
     while True:
         ret_val, image = cam.read()
-        
         humans = e.inference(image)
-        image2,centers = draw_humans(image, humans,imgcopy=False)
+        image2,centers = draw_humans(image.copy(), humans)
         edges = cv2.Canny(image,tol1,tol2)
         #im = cv2.bilateralFilter(im,3,75,75)
+        image2 = cv2.GaussianBlur(image2,(21,21),100,)
+
         image2 = cv2.GaussianBlur(image2,(21,21),100,)
 
         #image2 = cv2.GaussianBlur(image2,(15,15),0)
@@ -81,7 +70,7 @@ if __name__ == '__main__':
             cv2.imshow('tf-pose-estimation result', image)
         
          
-        #cv2.imshow('tf-pose-estimation result', im)
+        #cv2.imshow('tf-pose-estimation result', image)
 
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
