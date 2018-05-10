@@ -59,7 +59,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             lx = lear[0]
             rx = rear[0]
             hx = (lx + rx)/2 #Nope
-            taneyes = 0 #Bruker heller tangens her for å få en relativ vinkel.
+            #taneyes = 0 #Bruker heller tangens her for å få en relativ vinkel.
             # Plasser etterpå "midpunktet" "over" basert på vinkel. 
             dx = int(np.linalg.norm(np.array(lear)-np.array(rear)))
             #^relation for headsize, distance between ears
@@ -69,7 +69,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             earringsxr = int((rx+nx)/2.05)  
             earringsy = (nose[1]+neck[1])/2 #neck nose mid
             limblen= int(dx/4)+1
-            cv2.circle(npimg, (hx,hy), int(abs(dx*0.55)), col, thickness=limblen, lineType=8, shift=0)
+            cv2.circle(npimg, (hx,hy), int(abs(dx*0.55)), col, thickness=-limblen, lineType=8, shift=0)
             limblen=dx/8+1
             cv2.line(npimg, (lx,lear[1]), (earringsxl,earringsy) , col, limblen)
             cv2.line(npimg, (rx,rear[1]), (earringsxr,earringsy) , col, limblen)
@@ -85,7 +85,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             #Jacob's magic circle coord (next to ear) ?? wtf. fight me
             hy = int((rear[1]+leye[1])/2-dx*3.5)
             limblen = int((dx+abs(rx-leye[0])/2)*0.4)+1
-            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*0.7), col, thickness=limblen, lineType=8, shift=0)
+            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*0.7), col, thickness=-limblen, lineType=8, shift=0)
             limblen = dx+1
             cv2.line(npimg, (leye[0]+dx,leye[1]), (leye[0]+dx,(nose[1]+neck[1])/2) , col, limblen)
             cv2.line(npimg, (rx,rear[1]), (earringsxr,earringsy) , col,limblen)
@@ -100,7 +100,7 @@ def draw_humans(npimg, humans, imgcopy=False,):
             hx = lx - dx*4 #+ dx*20. /(lx-reyex))#circle center, next to ear
             hy = int((lear[1]+reye[1])/2-dx*3.5)               #circle center, slightly above ear
             limblen = int((abs(lx-reyex)/2+dx)*0.4)+1
-            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*0.7), col, thickness=limblen, lineType=8, shift=0)
+            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*0.7), col, thickness=-limblen, lineType=8, shift=0)
             limblen= dx+1
             cv2.line(npimg, (reyex+dx,reye[1]), (reyex+dx,(nose[1]+neck[1])/2) , col, limblen)
             cv2.line(npimg, (lx,reye[1]), (earringsxl,earringsy) ,col, limblen)
