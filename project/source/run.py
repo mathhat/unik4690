@@ -1,3 +1,4 @@
+#this script is now just a thresholding model for Joseph's variables
 import argparse
 import logging
 import time
@@ -44,10 +45,14 @@ if __name__ == '__main__':
 
     kernel = np.ones((2,2))
     kernel2 = np.ones((4,4))
+    #initial values
+    headbol = 0 #looking at head values
     tol1 = 500
     tol2 = 50
     tol = 20
     k1=k2=k3=k4=k5=k6=k7=k8=1
+    k =[k1,k2,k3,k4,k5,k6,k7,k8]
+
     # estimate human poses from a single image !
     image = common.read_imgfile(args.image, None, None)
     cv2.namedWindow('image')
@@ -56,14 +61,15 @@ if __name__ == '__main__':
     cv2.createTrackbar('canny1','image',0,500,nothing)
     cv2.createTrackbar('canny2','image',0,500,nothing)
     cv2.createTrackbar('Contour Length','image',0,500,nothing)
-    cv2.createTrackbar('k1_headsize','image',10,500,nothing)
-    cv2.createTrackbar('k2_headpos','image',10,500,nothing)
-    cv2.createTrackbar('k3_headpos','image',10,500,nothing)
-    cv2.createTrackbar('k4_headsize','image',10,500,nothing)
-    cv2.createTrackbar('k5_earring_width','image',10,500,nothing)
-    cv2.createTrackbar('k6_earring_width','image',10,500,nothing)
-    cv2.createTrackbar('k7_headx','image',10,500,nothing)
-    cv2.createTrackbar('k8_earringx','image',10,500,nothing)
+    if headbol:
+        cv2.createTrackbar('k1_headsize','image',10,500,nothing)
+        cv2.createTrackbar('k2_headpos','image',10,500,nothing)
+        cv2.createTrackbar('k3_headpos','image',10,500,nothing)
+        cv2.createTrackbar('k4_headsize','image',10,500,nothing)
+        cv2.createTrackbar('k5_earring_width','image',10,500,nothing)
+        cv2.createTrackbar('k6_earring_width','image',10,500,nothing)
+        cv2.createTrackbar('k7_headx','image',10,500,nothing)
+        cv2.createTrackbar('k8_earringx','image',10,500,nothing)
     # create switch for ON/OFF functionality
     minusswitch = '0 : OFF \n1 : ON'
     cv2.createTrackbar('minusk3k4', 'image',0,1,nothing)
@@ -76,19 +82,21 @@ if __name__ == '__main__':
     #try:
     while(1):
         image2 = np.copy(image)
-        image2,centers = draw_humans(image2, humans,k1,k2,k3,k4,k5,k6,k7,k8)
-        minusswitch = cv2.getTrackbarPos('minusk3k4', 'image')
-        k1 = cv2.getTrackbarPos('k1_headsize','image')*0.01
-        k2 = cv2.getTrackbarPos('k2_headpos','image')*0.01
-        k3 = cv2.getTrackbarPos('k3_headpos','image')*0.01
-        k4 = cv2.getTrackbarPos('k4_headsize','image')*0.01
-        if minusswitch:
-            k3*=-1
-            k2*=-1
-        k5 = cv2.getTrackbarPos('k5_earring_width','image')*0.01
-        k6 = cv2.getTrackbarPos('k6_earring_width','image')*0.01
-        k7 = cv2.getTrackbarPos('k7_headx','image')*0.01
-        k8 = cv2.getTrackbarPos('k8_earringx','image')*0.01
+        image2,centers = draw_humans(image2, humans,0,k)
+        if headbol:
+            minusswitch = cv2.getTrackbarPos('minusk3k4', 'image')
+            k1 = cv2.getTrackbarPos('k1_headsize','image')*0.01
+            k2 = cv2.getTrackbarPos('k2_headpos','image')*0.01
+            k3 = cv2.getTrackbarPos('k3_headpos','image')*0.01
+            k4 = cv2.getTrackbarPos('k4_headsize','image')*0.01
+            if minusswitch:
+                k3*=-1
+                k2*=-1
+            k5 = cv2.getTrackbarPos('k5_earring_width','image')*0.01
+            k6 = cv2.getTrackbarPos('k6_earring_width','image')*0.01
+            k7 = cv2.getTrackbarPos('k7_headx','image')*0.01
+            k8 = cv2.getTrackbarPos('k8_earringx','image')*0.01
+        k =[k1,k2,k3,k4,k5,k6,k7,k8]
         #image2 = cv2.GaussianBlur(image2,(31,31),100)
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/2#/255.
 

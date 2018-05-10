@@ -47,7 +47,7 @@ if __name__ == '__main__':
     while True:
         ret_val, image = cam.read()
         humans = e.inference(image)
-        image2,centers = draw_humans(image.copy(), humans)
+        image2,centers = draw_humans(image.copy(), humans,1)
         edges = cv2.Canny(image,tol1,tol2)
         #im = cv2.bilateralFilter(im,3,75,75)
         image2 = cv2.GaussianBlur(image2,(21,21),100,)

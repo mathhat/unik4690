@@ -5,13 +5,16 @@ import numpy as np
 import read
 
 
-def draw_humans(npimg, humans,k1=0,k2=0,k3=0,k4=0,k5=0,k6=0,k7=0,k8=0):
+def draw_humans(npimg, humans,bol=1,k=[0]):
     npimg *=0
     image_h, image_w = npimg.shape[:2]
     centers = {}
     col=[255,255,255]
-    k1,k2,k6 = read.k1()
-    k3,k4,k5,k7,k8 = read.k2()
+    if bol:
+        k1,k2,k6 = read.k1()
+        k3,k4,k5,k7,k8 = read.k2()
+    else:
+        k1,k2,k3,k4,k5,k6,k7,k8 = k
     
     for human in humans:
         # draw point
