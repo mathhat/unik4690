@@ -8,7 +8,7 @@ sys.path.append("/home/joe/Documents/tf-pose-estimation/src/")
 sys.path.append("/hdd/MACHINEVIS-OPENPOSE/tf-pose-estimation")
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 from gradient_estimator import human_canny 
-
+import read
 import common
 import cv2
 import numpy as np
@@ -70,19 +70,18 @@ if __name__ == '__main__':
         cv2.createTrackbar('k6_earring_width','image',10,500,nothing)
         cv2.createTrackbar('k7_headx','image',10,500,nothing)
         cv2.createTrackbar('k8_earringx','image',10,500,nothing)
-    # create switch for ON/OFF functionality
-    minusswitch = '0 : OFF \n1 : ON'
-    cv2.createTrackbar('minusk3k4', 'image',0,1,nothing)
+        # create switch for ON/OFF functionality
+        minusswitch = '0 : OFF \n1 : ON'
+        cv2.createTrackbar('minusk3k4', 'image',0,1,nothing)
     humans = e.inference(image, scales=scales)
 
         #cv2.imshow('image',img)
-        
+    tol1,tol2,tol = read.Tol()
         # get current positions of four trackbars
     print 'variables will not be saved, writing functions are commented out, check bottom of run.py'
     #try:
     while(1):
-        image2 = np.copy(image)
-        image2,centers = draw_humans(image2, humans,1)
+        
         if headbol:
             minusswitch = cv2.getTrackbarPos('minusk3k4', 'image')
             k1 = cv2.getTrackbarPos('k1_headsize','image')*0.01
@@ -97,7 +96,9 @@ if __name__ == '__main__':
             k7 = cv2.getTrackbarPos('k7_headx','image')*0.01
             k8 = cv2.getTrackbarPos('k8_earringx','image')*0.01
             k =[k1,k2,k3,k4,k5,k6,k7,k8]
-        #image2 = cv2.GaussianBlur(image2,(31,31),100)
+        image2 = np.copy(image)
+        image2,centers = draw_humans(image2, humans,1)
+        image2 = cv2.GaussianBlur(image2,(31,31),100)
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/2#/255.
 
 
@@ -106,8 +107,8 @@ if __name__ == '__main__':
         tol = cv2.getTrackbarPos('Contour Length','image')
 
         edges = cv2.Canny(image,tol1,tol2)
-        #contours = human_canny(edges,image2,tol)#returns contours
-        #image3 = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)
+        contours = human_canny(edges,image2,tol)#returns contours
+        image3 = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)
 
         cv2.imshow('image1',edges+image2)
         cv2.imshow('image',np.zeros((100,1000)))
