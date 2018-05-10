@@ -60,7 +60,7 @@ def draw_humans(npimg, humans,k1=0,k2=0,k3=0,k4=0,k5=0,k6=0,k7=0,k8=0):
             lx = lear[0]
             rx = rear[0]
             hx = (lx + rx)/2 #Nope
-            taneyes = 0 #Bruker heller tangens her for å få en relativ vinkel.
+            #taneyes = 0 #Bruker heller tangens her for å få en relativ vinkel.
             # Plasser etterpå "midpunktet" "over" basert på vinkel. 
             dx = int(np.linalg.norm(np.array(lear)-np.array(rear)))
             #^relation for headsize, distance between ears
