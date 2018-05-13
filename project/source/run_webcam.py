@@ -10,7 +10,7 @@ import cv2
 import numpy as np
 
 from estimator import TfPoseEstimator
-from draw import draw_humans
+from draw2 import draw_humans
 from networks import get_graph_path, model_wh
 
 logger = logging.getLogger('TfPoseEstimator-WebCam')
@@ -50,14 +50,11 @@ if __name__ == '__main__':
         image2,centers = draw_humans(image.copy(), humans,1)
         edges = cv2.Canny(image,tol1,tol2)
         #im = cv2.bilateralFilter(im,3,75,75)
-        image2 = cv2.GaussianBlur(image2,(21,21),100,)
-
-        image2 = cv2.GaussianBlur(image2,(21,21),100,)
-
-        #image2 = cv2.GaussianBlur(image2,(15,15),0)
-
-        image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
         
+        #image2 = cv2.GaussianBlur(image2,(21,21),100,)
+        
+        #image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
+        '''        
         if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
             contours = human_canny(edges,image2,tol)#returns contours
             image = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)/255.#draws contours
@@ -69,8 +66,8 @@ if __name__ == '__main__':
 
             cv2.imshow('tf-pose-estimation result', image)
         
-         
-        #cv2.imshow('tf-pose-estimation result', image)
+        '''
+        cv2.imshow('tf-pose-estimation result', image2)
 
         fps_time = time.time()
         if cv2.waitKey(1) == 27:

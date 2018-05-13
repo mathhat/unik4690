@@ -79,7 +79,7 @@ def draw_humans(npimg, humans,bol=1,k=[0]):
             cv2.line(npimg, (rx,rear[1]), (earringsxr,earringsy) , col, limblen)
 
         #head pointing left (left eye hidden)
-        elif rear and reye and neck and leye and nose:#head circle if right ear is present + faceline
+        elif rear and neck and leye and nose:#head circle if right ear is present + faceline
             rx = rear[0]          
             dx = abs(leye[0]-rx)/10+1 #dist between ear n eye
             earringsxr = (rx+neck[0])/2

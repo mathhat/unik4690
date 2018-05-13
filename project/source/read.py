@@ -3,7 +3,6 @@ def Tol():
     with open('thresdata.txt','r') as File:
         File.readline()
         for line in File:
-            print line.split(' ')
             l = map(float,line.split(' ')[:-1])
             tol1 += l[0]
             tol2 += l[1]
