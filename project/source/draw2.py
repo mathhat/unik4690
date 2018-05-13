@@ -101,7 +101,10 @@ def draw_torso(npimg,Centers,col,parts):
         torso = np.asarray(torso)
         torso = torso.reshape((-1,1,2),)
         #print torso
-        npimg = cv2.polylines(npimg,[torso],1,col,10)
+
+        #npimg = cv2.polylines(npimg,[torso],1,col,10)
+
+        npimg = cv2.fillPoly(npimg,[torso],col)
     return npimg
 
 def draw_humans(npimg, humans,bol=1,k=[0]): #main function
