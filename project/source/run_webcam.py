@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import argparse
 import logging
 import time
@@ -5,7 +6,7 @@ import sys
 sys.path.append("/home/joe/Documents/tf-pose-estimation/src/") 
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 from gradient_estimator import human_canny 
-from Laplace_Filter import Laplacian_blend
+from Laplace_Filter_Deprecated import Laplacian_blend, constructGaussian,constructLaplacian
 import read
 
 
@@ -31,7 +32,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tf-pose-estimation realtime webcam')
     parser.add_argument('--camera', type=int, default=0)
     parser.add_argument('--zoom', type=float, default=1)
-    parser.add_argument('--resolution', type=str, default='480x640', help='network input resolution. default=432x368')#def 432 368
+    parser.add_argument('--resolution', type=str, default='432x368', help='network input resolution. default=432x368')#def 432 368
     parser.add_argument('--model', type=str, default='mobilenet_thin', help='cmu / mobilenet_thin')
     parser.add_argument('--show-process', type=bool, default=False,
                         help='for debug purpose, if enabled, speed for inference is dropped.')
@@ -50,6 +51,7 @@ if __name__ == '__main__':
     while True:
         ret_val, image = cam.read()
         humans = e.inference(image)
+        imbw = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)/255.
         image2,centers = draw_humans(image.copy(), humans,1)
         edges = cv2.Canny(image,tol1,tol2)
         #im = cv2.bilateralFilter(im,3,75,75)
@@ -70,7 +72,10 @@ if __name__ == '__main__':
             cv2.imshow('tf-pose-estimation result', image)
         
         '''
-        image3 = Laplacian_blend(edges/255.,image2,kernel)
+        background = np.zeros_like(image2)
+        # image2 burde her være "dukka" eller masken til hele greia. 
+        # dersom den ikke er der vil man bare få det ene bildet diretke 
+        image3 = Laplacian_blend(imbw,edges/255.,image2)
         cv2.imshow('tf-pose-estimation result',image3)
 
         fps_time = time.time()
