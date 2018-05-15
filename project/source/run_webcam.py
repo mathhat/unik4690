@@ -5,7 +5,7 @@ import sys
 sys.path.append("/home/joe/Documents/tf-pose-estimation/src/") 
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 from gradient_estimator import human_canny 
-from Laplace_Filter import Laplacian_blend
+from Laplace_Filter_Deprecated import constructGaussian, constructLaplacian, Laplacian_blend
 import read
 
 
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tf-pose-estimation realtime webcam')
     parser.add_argument('--camera', type=int, default=0)
     parser.add_argument('--zoom', type=float, default=1)
-    parser.add_argument('--resolution', type=str, default='480x640', help='network input resolution. default=432x368')#def 432 368
+    parser.add_argument('--resolution', type=str, default='432x368', help='network input resolution. default=432x368')#def 432 368
     parser.add_argument('--model', type=str, default='mobilenet_thin', help='cmu / mobilenet_thin')
     parser.add_argument('--show-process', type=bool, default=False,
                         help='for debug purpose, if enabled, speed for inference is dropped.')
@@ -70,8 +70,9 @@ if __name__ == '__main__':
             cv2.imshow('tf-pose-estimation result', image)
         
         '''
+        #Hva skjer egentlig her ? ? ? 
         image3 = Laplacian_blend(edges/255.,image2,kernel)
-        cv2.imshow('tf-pose-estimation result',image3)
+        cv2.imshow('tf-pose-estimation result',image2)
 
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
