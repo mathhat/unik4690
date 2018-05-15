@@ -19,13 +19,12 @@ def constructLaplacian(gaussian_pyramid):
     #Note, should be same as gaussian 
     lp = [gaussian_pyramid[-1]]
     for i in xrange((len(gaussian_pyramid) - 1), 0, -1): 
-        GE = cv2.pyrUp(gaussian_pyramid[i])
-        import sys 
-        
+        GE = cv2.pyrUp(gaussian_pyramid[i])        
         try:
             L = gaussian_pyramid[i-1]- GE
         except:
             L = gaussian_pyramid[i-1]- GE[1:]
+            print "fak"
         lp.append(L)
     return lp
 
@@ -62,6 +61,7 @@ def Laplacian_blend(image1, image2, blending_filter):
             recons +=  LS[i]
         except:
             recons =  recons[1:] + LS[i]
+            print "fak"
     return recons
     
  
