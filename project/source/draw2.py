@@ -6,6 +6,7 @@ import read
 
 
 def draw_head(npimg,Centers,col,bol,k=[0]):
+    npimg*=0
     tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
     lear = tryvar(17)
     rear = tryvar(16)

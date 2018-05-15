@@ -5,7 +5,10 @@ import sys
 sys.path.append("/home/joe/Documents/tf-pose-estimation/src/") 
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 from gradient_estimator import human_canny 
+from Laplace_Filter import Laplacian_blend
 import read
+
+
 import cv2
 import numpy as np
 
@@ -53,7 +56,7 @@ if __name__ == '__main__':
         
         #image2 = cv2.GaussianBlur(image2,(21,21),100,)
         
-        #image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
+        image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
         '''        
         if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
             contours = human_canny(edges,image2,tol)#returns contours
@@ -67,7 +70,8 @@ if __name__ == '__main__':
             cv2.imshow('tf-pose-estimation result', image)
         
         '''
-        cv2.imshow('tf-pose-estimation result', image2)
+        image3 = Laplacian_blend(edges/255.,image2,kernel)
+        cv2.imshow('tf-pose-estimation result',image3)
 
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
