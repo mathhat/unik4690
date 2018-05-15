@@ -1,0 +1,44 @@
+\documentclass{article} %landscape mode included
+\usepackage{geometry}
+\geometry{left=20mm,right=20mm,top=20mm,bottom=30mm}
+\usepackage{fancyvrb}   % for verbatim monospace computer code
+\usepackage{graphicx}   % for \includegraphics command
+\usepackage{pdfpages}
+\usepackage{amssymb,amsmath}    % math stuff
+\usepackage{mathtools}
+\usepackage{verbatim}   % for importing verbatim. fancy is better google it
+\usepackage[utf8]{inputenc} % utf-8 encoding.
+\usepackage{physics} %for bra-ket notattino etc. 
+\usepackage{multicol,caption}
+\usepackage{lipsum}
+\usepackage{epigraph}
+\usepackage{enumitem}
+\usepackage{tensor}
+\usepackage{hyperref}
+\setlength{\columnsep}{1cm}
+\newenvironment{Figure}
+  {\par\medskip\noindent\minipage{\linewidth}}
+  {\endminipage\par\medskip}
+\begin{document}
+\title{UNIK 4690 Computer Vision Project\\ The Magic Greenscreen}
+\author{Joseph Knutson \& Jacob Alexander Hay}
+\date{2018-05-16}
+\maketitle
+
+ 
+
+%\section*{Mulige kilder til segmentering:} 
+%\url{https://www.cs.cmu.edu/~hebert/boundaries.htm}
+\abstract{}
+\section*{Introduction}
+Green Screens, are used in movies, series, news, video-games and home-made videos with the main reason of providing an artificial background. The technique requires an
+approximately monochrome and plain background (often green) to be placed behind whatever is wanted in the foreground (often a person). When the green screen is placed, 
+a technique called Chroma Keying is applied in order to map where the plain green surface is. When the location of the green pixels are knows, a CGI, Computer Generated 
+Image, is mapped onto these pixels, making it seem like the person is standing in front of whatever is put in the back.
+
+Our algorithm provides a Green Screen tool, without having to place a Green Screen inside the scene.
+Our course has thought us complex, color based segmentation methods, but as people's backgrounds vary, colour based segmentation is not an option.
+
+
+
+\end{document}
