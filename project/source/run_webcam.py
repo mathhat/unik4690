@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import argparse
 import logging
 import time
@@ -5,7 +6,7 @@ import sys
 sys.path.append("/home/joe/Documents/tf-pose-estimation/src/") 
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 from gradient_estimator import human_canny 
-from Laplace_Filter_Deprecated import constructGaussian, constructLaplacian, Laplacian_blend
+from Laplace_Filter_Deprecated import Laplacian_blend, constructGaussian,constructLaplacian
 import read
 
 
@@ -50,6 +51,7 @@ if __name__ == '__main__':
     while True:
         ret_val, image = cam.read()
         humans = e.inference(image)
+        imbw = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)/255.
         image2,centers = draw_humans(image.copy(), humans,1)
         edges = cv2.Canny(image,tol1,tol2)
         #im = cv2.bilateralFilter(im,3,75,75)
@@ -70,9 +72,11 @@ if __name__ == '__main__':
             cv2.imshow('tf-pose-estimation result', image)
         
         '''
-        #Hva skjer egentlig her ? ? ? 
-        image3 = Laplacian_blend(edges/255.,image2,kernel)
-        cv2.imshow('tf-pose-estimation result',image2)
+        background = np.zeros_like(image2)
+        # image2 burde her være "dukka" eller masken til hele greia. 
+        # dersom den ikke er der vil man bare få det ene bildet diretke 
+        image3 = Laplacian_blend(imbw,edges/255.,image2)
+        cv2.imshow('tf-pose-estimation result',image3)
 
         fps_time = time.time()
         if cv2.waitKey(1) == 27:

@@ -26,6 +26,7 @@ def constructLaplacian(gaussian_pyramid):
 
 
 def Laplacian_blend(image1, image2, blending_filter):
+    # filtrerer fra im1 til im2 ved hjelp av blending_filter
     # Gaussian pyr of images
     gp1 = constructGaussian(image1)
     gp2 = constructGaussian(image2)
