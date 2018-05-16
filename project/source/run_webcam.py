@@ -53,7 +53,7 @@ if __name__ == '__main__':
         humans = e.inference(image)
         imbw = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)/255.
         image2,centers = draw_humans(image.copy(), humans,1)
-        edges = cv2.Canny(image,tol1,tol2)
+        #edges = cv2.Canny(image,tol1,tol2)
         #im = cv2.bilateralFilter(im,3,75,75)
         
         #image2 = cv2.GaussianBlur(image2,(21,21),100,)
@@ -75,7 +75,8 @@ if __name__ == '__main__':
         background = np.zeros_like(image2)
         # image2 burde her være "dukka" eller masken til hele greia. 
         # dersom den ikke er der vil man bare få det ene bildet diretke 
-        image3 = Laplacian_blend(imbw,edges/255.,image2)
+        image3 = Laplacian_blend(imbw,background,image2)
+        image3 = cv2.threshold(image3,0.2,255,cv2.THRESH_TOZERO)[1]
         cv2.imshow('tf-pose-estimation result',image3)
 
         fps_time = time.time()

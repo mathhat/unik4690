@@ -24,7 +24,6 @@ def constructLaplacian(gaussian_pyramid):
             L = gaussian_pyramid[i-1]- GE
         except:
             L = gaussian_pyramid[i-1]- GE[1:]
-            print "fak"
         lp.append(L)
     return lp
 
@@ -46,7 +45,7 @@ def Laplacian_blend(image1, image2, blending_filter):
     LS = []
     for i in range(len(lp1)):
         ls = np.zeros(lp1[i].shape)
-        filter_of_im1 = cv2.filter2D(lp1[i], -1,filter_gaussian[i])
+        filter_of_im1 =   cv2.filter2D(lp1[i],-1,filter_gaussian[i])
         negative_of_im2 = cv2.filter2D(lp2[i],-1,negative_filter_gaussian[i]) 
         ls += filter_of_im1
         ls += negative_of_im2
@@ -61,8 +60,5 @@ def Laplacian_blend(image1, image2, blending_filter):
             recons +=  LS[i]
         except:
             recons =  recons[1:] + LS[i]
-            print "fak"
+
     return recons
-    
- 
-        

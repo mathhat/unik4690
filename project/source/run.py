@@ -8,13 +8,14 @@ sys.path.append("/home/joe/Documents/tf-pose-estimation/src/")
 sys.path.append("/hdd/MACHINEVIS-OPENPOSE/tf-pose-estimation")
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 from gradient_estimator import human_canny 
+from Laplace_Filter_Deprecated import Laplacian_blend, constructGaussian,constructLaplacian
 import read
 import common
 import cv2
 import numpy as np
 from estimator import TfPoseEstimator
 from networks import get_graph_path, model_wh
-from draw import draw_humans
+from draw2 import draw_humans
 
 from lifting.prob_model import Prob3dPose
 from lifting.draw import plot_pose
@@ -55,12 +56,14 @@ if __name__ == '__main__':
 
     # estimate human poses from a single image !
     image = common.read_imgfile(args.image, None, None)
-    cv2.namedWindow('image')
+    #cv2.namedWindow('image')
     # Create a black image, a window
     # create trackbars for color change
-    cv2.createTrackbar('canny1','image',0,500,nothing)
-    cv2.createTrackbar('canny2','image',0,500,nothing)
-    cv2.createTrackbar('Contour Length','image',0,500,nothing)
+    #cv2.createTrackbar('canny1','image',0,500,nothing)
+    #cv2.createTrackbar('canny2','image',0,500,nothing)
+    #cv2.createTrackbar('Contour Length','image',0,500,nothing)
+    #cv2.createTrackbar('Thresh','image',600,850,nothing)
+
     if headbol:
         cv2.createTrackbar('k1_headsize','image',10,500,nothing)
         cv2.createTrackbar('k2_headpos','image',10,500,nothing)
@@ -96,22 +99,21 @@ if __name__ == '__main__':
             k7 = cv2.getTrackbarPos('k7_headx','image')*0.01
             k8 = cv2.getTrackbarPos('k8_earringx','image')*0.01
             k =[k1,k2,k3,k4,k5,k6,k7,k8]
-        image2 = np.copy(image)
-        image2,centers = draw_humans(image2, humans,1)
-        image2 = cv2.GaussianBlur(image2,(31,31),100)
-        image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/2#/255.
+        imbw = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)/255.
+        image2,centers = draw_humans(image.copy(), humans,1)
+        image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
+        background = np.zeros_like(image2)
+        image3 = Laplacian_blend(imbw,background,image2)
+        #tol = cv2.getTrackbarPos('Thresh','image')*0.001
+        image3 = cv2.threshold(image3,0.2,255,cv2.THRESH_TOZERO)[1]
+        #tol1 = cv2.getTrackbarPos('canny1','image')
+        #tol2 = cv2.getTrackbarPos('canny2','image')
+        #tol = cv2.getTrackbarPos('Contour Length','image')
 
+        #edges = cv2.Canny(image,tol1,tol2)
 
-        tol1 = cv2.getTrackbarPos('canny1','image')
-        tol2 = cv2.getTrackbarPos('canny2','image')
-        tol = cv2.getTrackbarPos('Contour Length','image')
-
-        edges = cv2.Canny(image,tol1,tol2)
-        contours = human_canny(edges,image2,tol)#returns contours
-        image3 = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)
-
-        cv2.imshow('image1',edges+image2)
-        cv2.imshow('image',np.zeros((100,1000)))
+        cv2.imshow('image1',image3)
+        #cv2.imshow('image',np.zeros((100,500)))
         
         k = cv2.waitKey(1) & 0xFF
         if k == 27:

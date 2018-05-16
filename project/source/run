@@ -1,1 +1,1 @@
-python run_webcam.py --model=mobilenet_thin --resolution=512x512 --camera=1
+python run_webcam.py --model=mobilenet_thin --resolution=432x368 --camera=1
