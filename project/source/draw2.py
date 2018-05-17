@@ -6,7 +6,6 @@ import read
 
 
 def draw_head(npimg,Centers,col,bol,k=[0]):
-    npimg*=0
     tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
     lear = tryvar(17)
     rear = tryvar(16)
@@ -115,7 +114,7 @@ def draw_torso(npimg,Centers,col,parts):
     return npimg
 
 def draw_humans(npimg, humans,bol=1,k=[0]): #main function
-    #npimg *=0
+    npimg *=0
     image_h, image_w = npimg.shape[:2]
     centers = {}
     col = [255,255,255]
@@ -131,7 +130,6 @@ def draw_humans(npimg, humans,bol=1,k=[0]): #main function
             center = (int(body_part.x * image_w + 0.5), int(body_part.y * image_h + 0.5))
             centers[i] = center
             Centers[i] = center
-
         npimg = draw_head(npimg,Centers,col,bol,k) #draws head
         npimg = draw_limbs(npimg,Centers,col,parts) #draws arms and legs
         npimg = draw_torso(npimg,Centers,col,parts) #sigh

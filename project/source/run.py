@@ -32,6 +32,7 @@ logger.addHandler(ch)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tf-pose-estimation run')
     parser.add_argument('--image', type=str, default='Images/4.jpg')  #../images/p2.jpg')
+    parser.add_argument('--back', type=str, default='/Images/back.jpg')  #../images/p2.jpg')
     parser.add_argument('--resolution', type=str, default='432x368', help='network input resolution. default=432x368')
     parser.add_argument('--model', type=str, default='mobilenet_thin', help='cmu / mobilenet_thin')
     parser.add_argument('--scales', type=str, default='[None]', help='for multiple scales, eg. [1.0, (1.1, 0.05)]')
@@ -56,13 +57,19 @@ if __name__ == '__main__':
 
     # estimate human poses from a single image !
     image = common.read_imgfile(args.image, None, None)
-    #cv2.namedWindow('image')
+    back  = common.read_imgfile(args.back,None,None)
+    back = back[:image.shape[0],:image.shape[1]]
+    back= cv2.cvtColor(back, cv2.COLOR_BGR2GRAY)/255.
+
+    print back.shape 
+    print image.shape
+    cv2.namedWindow('image')
     # Create a black image, a window
     # create trackbars for color change
     #cv2.createTrackbar('canny1','image',0,500,nothing)
     #cv2.createTrackbar('canny2','image',0,500,nothing)
     #cv2.createTrackbar('Contour Length','image',0,500,nothing)
-    #cv2.createTrackbar('Thresh','image',600,850,nothing)
+    cv2.createTrackbar('Thresh','image',600,850,nothing)
 
     if headbol:
         cv2.createTrackbar('k1_headsize','image',10,500,nothing)
@@ -102,16 +109,16 @@ if __name__ == '__main__':
         imbw = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)/255.
         image2,centers = draw_humans(image.copy(), humans,1)
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
-        background = np.zeros_like(image2)
-        image3 = Laplacian_blend(imbw,background,image2)
-        #tol = cv2.getTrackbarPos('Thresh','image')*0.001
-        image3 = cv2.threshold(image3,0.2,255,cv2.THRESH_TOZERO)[1]
+        #background = np.zeros_like(image2)
+        print image2
+        tol = cv2.getTrackbarPos('Thresh','image')*0.001
+        image2 = cv2.threshold(image2,tol,255,cv2.THRESH_TOZERO)[1]
         #tol1 = cv2.getTrackbarPos('canny1','image')
         #tol2 = cv2.getTrackbarPos('canny2','image')
         #tol = cv2.getTrackbarPos('Contour Length','image')
 
         #edges = cv2.Canny(image,tol1,tol2)
-
+        image3 = Laplacian_blend(imbw,back,image2)
         cv2.imshow('image1',image3)
         #cv2.imshow('image',np.zeros((100,500)))
         
