@@ -35,7 +35,7 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             #limblen= int(dx/4)+1
             l =8.*dx/(abs(nose[1]-neck[1])+1)
             #cv2.circle(npimg, (hx,hy), int(abs(dx*k1)), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5+l))  ,0,180,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5+l))  ,0,0,360,col,-1)
             cv2.ellipse(npimg,(hx,hy2),(int(dx*k1/1.),int(dx*k1/1.3))  ,0,180,360,col,-1)
             
         #head pointing left (left eye hidden)

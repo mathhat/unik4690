@@ -84,7 +84,7 @@ if __name__ == '__main__':
         image3 = Laplacian_blend(imbw, back,image2)
         image3 = cv2.threshold(image3,0.,255,cv2.THRESH_TOZERO)[1]
         
-        cv2.imshow('tf-pose-estimation result',image3)
+        cv2.imshow('tf-pose-estimation result',image2)
 
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
