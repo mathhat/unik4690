@@ -72,8 +72,8 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             #cv2.line(npimg, (reyex+dx,reye[1]), (reyex+dx,(nose[1]+neck[1])/2) , col, limblen)
             #cv2.line(npimg, (lx+int(dx*k8),reye[1]), (earringsxl+int(dx*k8),earringsy) ,col, limblen)
         #NECK SIRCLE
-        r = ((neck[0]-nose[0])*(neck[0]-nose[0])+(neck[1]-nose[1])*(neck[1]-nose[1]))/200
-        cv2.circle(npimg, (neck[0],neck[1]), r, col, thickness=-1, lineType=8, shift=0)
+        #r = ((neck[0]-nose[0])*(neck[0]-nose[0])+(neck[1]-nose[1])*(neck[1]-nose[1]))/200
+        #cv2.circle(npimg, (neck[0],neck[1]), r, col, thickness=-1, lineType=8, shift=0)
 
     return npimg
 
@@ -95,8 +95,37 @@ def draw_limbs(npimg,Centers,col,parts):
     return npimg
 
 def draw_torso(npimg,Centers,col,parts):
-    i = 0
+    #i = 0
     torso = []
+    tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
+    lshould = tryvar(5)
+    rshould = tryvar(2)
+    neck = tryvar(1)
+    if neck and lshould:
+        dx = (lshould[0] - neck[0])*2
+        dy = (lshould[1] - neck[1])*2
+
+
+        torso.append([lshould[0],lshould[1]])
+        torso.append([lshould[0]-dx,lshould[1]-dy])
+        torso.append([neck[0]-dy,neck[1]+int(dx*1.5)]) #normal
+        torso = np.asarray(torso)
+        torso = torso.reshape((-1,1,2),)   
+        npimg = cv2.fillPoly(npimg,[torso],col)
+    elif neck and rshould:
+        dx = (rshould[0] - neck[0])*2
+        dy = (rshould[1] - neck[1])*2
+
+
+        torso.append([rshould[0],rshould[1]])
+        torso.append([rshould[0]-dx,rshould[1]-dy])
+        torso.append([neck[0]+dy,neck[1]-int(dx*1.5)]) #normal
+        torso = np.asarray(torso)
+        torso = torso.reshape((-1,1,2),)   
+        npimg = cv2.fillPoly(npimg,[torso],col)
+
+
+    '''
     for part in common.CocoTorso:
         if part not in parts:
             continue 
@@ -110,7 +139,9 @@ def draw_torso(npimg,Centers,col,parts):
         #npimg = cv2.polylines(npimg,[torso],1,col,10)
 
         npimg = cv2.fillPoly(npimg,[torso],col)
-    
+    '''
+
+
     return npimg
 
 def draw_humans(npimg, humans,bol=1,k=[0]): #main function
