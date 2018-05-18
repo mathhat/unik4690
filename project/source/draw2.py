@@ -30,50 +30,32 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             # Plasser etterpå "midpunktet" "over" basert på vinkel. 
             dx = int(np.linalg.norm(np.array(lear)-np.array(rear)))
             #^relation for headsize, distance between ears
-            nx = neck[0] 
-            hy =  int((rear[1]+lear[1])/2-dx/k2) #nope  #fight me
-            earringsxl = int((lx+nx)/2.)
-            earringsxr = int((rx+nx)/2.)  
-            earringsy = (nose[1]+neck[1])/2 #neck nose mid
-            limblen= int(dx/4)+1
-            cv2.circle(npimg, (hx,hy), int(abs(dx*k1)), col, thickness=-limblen, lineType=8, shift=0)
-            #limblen= int((dx/8+1)*k6)
-            #cv2.line(npimg, (lx,lear[1]), (earringsxl,earringsy) , col, limblen)
-            #cv2.line(npimg, (rx,rear[1]), (earringsxr,earringsy) , col, limblen)
-
+            hy =  int((rear[1]+lear[1])/2)#-dx/k2) #nope  #fight me
+            #limblen= int(dx/4)+1
+            l =10.*dx/(abs(nose[1]-neck[1])+1)
+            #cv2.circle(npimg, (hx,hy), int(abs(dx*k1)), col, thickness=-limblen, lineType=8, shift=0)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5+l))  ,0,180,360,col,-1)
+            
         #head pointing left (left eye hidden)
         elif rear and leye:#head circle if right ear is present + faceline
             rx = rear[0]          
             dx = abs(leye[0]-rx)/10+1 #dist between ear n eye
-            earringsxr = (rx+neck[0])/2
-            earringsy = (nose[1]+neck[1])/2 #neck nose mid
-
-            hx = int(rx+dx*4*k7) #- dx*20 / (rx-leye[0]))
+            hx = int(rx+dx*4*k7*1.2) #- dx*20 / (rx-leye[0]))
             #Jacob's magic circle coord (next to ear) ?? wtf. fight me
-            hy = int((rear[1]+leye[1])/2+dx*k3)
-            limblen = int((dx+abs(rx-leye[0])/2)*0.4)+1
-            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*k4), col, thickness=-limblen, lineType=8, shift=0)
-            #limblen = int((dx+1)*k5)
-            #cv2.line(npimg, (leye[0]+dx,leye[1]), (leye[0]+dx,(nose[1]+neck[1])/2) , col, limblen)
-            #cv2.line(npimg, (rx-int(dx*k8),rear[1]), (earringsxr-int(dx*k8),earringsy) , col,limblen)
-
+            hy = int((rear[1]+leye[1])/2+dx*k3*1.5)
+            #limblen = int((dx+abs(rx-leye[0])/2)*0.4)+1
+            #cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*k4), col, thickness=-limblen, lineType=8, shift=0)
+            cv2.ellipse(npimg,(hx,hy),(int(abs(nose[0]-rx)*k4*0.9),int(abs(nose[0]-rx)*k4*0.7))  ,-20,0,360,col,-1)
                 
         elif lear and reye:#head circle if left ear is present + faceline
             lx = lear[0]
             reyex = reye[0] 
             dx = abs(lx-reyex)/10+1
-            earringsxl =(lx+neck[0])/2
-            earringsy = (nose[1]+neck[1])/2 #neck nose mid
             hx = int(lx - dx*4*k7) #+ dx*20. /(lx-reyex))#circle center, next to ear
-            hy = int((lear[1]+reye[1])/2+dx*k3)               #circle center, slightly above ear
-            limblen = int((abs(lx-reyex)/2+dx)*k5)
-            cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*k4), col, thickness=-limblen, lineType=8, shift=0)
-            #limblen= int((dx+1)*k5)
-            #cv2.line(npimg, (reyex+dx,reye[1]), (reyex+dx,(nose[1]+neck[1])/2) , col, limblen)
-            #cv2.line(npimg, (lx+int(dx*k8),reye[1]), (earringsxl+int(dx*k8),earringsy) ,col, limblen)
-        #NECK SIRCLE
-        #r = ((neck[0]-nose[0])*(neck[0]-nose[0])+(neck[1]-nose[1])*(neck[1]-nose[1]))/200
-        #cv2.circle(npimg, (neck[0],neck[1]), r, col, thickness=-1, lineType=8, shift=0)
+            hy = int((lear[1]+reye[1])/2+dx*k3*1.5)               #circle center, slightly above ear
+            #limblen = int((abs(lx-reyex)/2+dx)*k5)
+            #cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*k4), col, thickness=-limblen, lineType=8, shift=0)
+            cv2.ellipse(npimg,(hx,hy),(int(abs(nose[0]-lx)*k4*0.9),int(abs(nose[0]-lx)*k4*0.7))  ,20,0,360,col,-1)
 
     return npimg
 
@@ -101,30 +83,33 @@ def draw_torso(npimg,Centers,col,parts):
     lshould = tryvar(5)
     rshould = tryvar(2)
     neck = tryvar(1)
+    minus = -1
+    
+    
+    
     if neck and lshould:
-        dx = (lshould[0] - neck[0])*2
-        dy = (lshould[1] - neck[1])*2
-
-
-        torso.append([lshould[0],lshould[1]])
-        torso.append([lshould[0]-dx,lshould[1]-dy])
-        torso.append([neck[0]-dy,neck[1]+int(dx*1.5)]) #normal
-        torso = np.asarray(torso)
-        torso = torso.reshape((-1,1,2),)   
-        npimg = cv2.fillPoly(npimg,[torso],col)
+        should = lshould 
+        minus = 1
     elif neck and rshould:
-        dx = (rshould[0] - neck[0])*2
-        dy = (rshould[1] - neck[1])*2
+        should = rshould
+        
+    else:
+        return npimg
+    dx = (should[0] - neck[0])*2
+    dy = (should[1] - neck[1])*2
+
+    torso.append([should[0],should[1]])
+    torso.append([should[0]-dx,should[1]-dy])
+    torso.append([neck[0]-dy*minus,neck[1]+int(dx*1.5)*minus]) #normal
+    torso = np.asarray(torso)
+    torso = torso.reshape((-1,1,2),)   
+    npimg = cv2.fillPoly(npimg,[torso],col)
+    torso[-1] = [neck[0]+dy*minus,neck[1]-int(dx*0.35)*minus]
+    npimg = cv2.fillPoly(npimg,[torso],col)
 
 
-        torso.append([rshould[0],rshould[1]])
-        torso.append([rshould[0]-dx,rshould[1]-dy])
-        torso.append([neck[0]+dy,neck[1]-int(dx*1.5)]) #normal
-        torso = np.asarray(torso)
-        torso = torso.reshape((-1,1,2),)   
-        npimg = cv2.fillPoly(npimg,[torso],col)
-
-
+    #npimg = cv2.line(npimg,(torso[0,0,0],torso[0,0,1]),(torso[1,0,0],torso[1,0,1]),col,int(np.sqrt(dx*dx+dy*dy)/4))
+    
     '''
     for part in common.CocoTorso:
         if part not in parts:
@@ -145,7 +130,7 @@ def draw_torso(npimg,Centers,col,parts):
     return npimg
 
 def draw_humans(npimg, humans,bol=1,k=[0]): #main function
-    npimg *=0
+    #npimg *=0
     image_h, image_w = npimg.shape[:2]
     centers = {}
     col = [255,255,255]

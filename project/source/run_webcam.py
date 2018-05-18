@@ -80,9 +80,12 @@ if __name__ == '__main__':
         #background = np.zeros_like(image2)
         # image2 burde her være "dukka" eller masken til hele greia. 
         # dersom den ikke er der vil man bare få det ene bildet diretke 
-        image3 = Laplacian_blend(imbw,back,image2)
-        image3 = cv2.threshold(image3,0.0,255,cv2.THRESH_TOZERO)[1]
-        cv2.imshow('tf-pose-estimation result',image3)
+        
+        #image3 = Laplacian_blend(imbw,np.zeros_like(back),image2)
+        #image3 = cv2.threshold(image3,0.,255,cv2.THRESH_TOZERO)[1]
+        #image3 = Laplacian_blend(imbw,image3-back,image2)
+        
+        cv2.imshow('tf-pose-estimation result',image2)
 
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
