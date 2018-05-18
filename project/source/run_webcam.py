@@ -6,7 +6,7 @@ import sys
 import common
 sys.path.append("/home/joe/Documents/tf-pose-estimation/src/") 
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
-from gradient_estimator import human_canny 
+#from gradient_estimator import human_canny 
 from Laplace_Filter_Deprecated import Laplacian_blend, constructGaussian,constructLaplacian
 import read
 
@@ -45,7 +45,6 @@ if __name__ == '__main__':
     cam = cv2.VideoCapture(args.camera)
     ret_val, image = cam.read()
     back  = common.read_imgfile(args.back,None,None)
-    print back
     back= cv2.cvtColor(back, cv2.COLOR_BGR2GRAY)/255.
 
     #back[:w,:h]

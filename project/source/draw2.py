@@ -37,9 +37,9 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             earringsy = (nose[1]+neck[1])/2 #neck nose mid
             limblen= int(dx/4)+1
             cv2.circle(npimg, (hx,hy), int(abs(dx*k1)), col, thickness=-limblen, lineType=8, shift=0)
-            limblen= int((dx/8+1)*k6)
-            cv2.line(npimg, (lx,lear[1]), (earringsxl,earringsy) , col, limblen)
-            cv2.line(npimg, (rx,rear[1]), (earringsxr,earringsy) , col, limblen)
+            #limblen= int((dx/8+1)*k6)
+            #cv2.line(npimg, (lx,lear[1]), (earringsxl,earringsy) , col, limblen)
+            #cv2.line(npimg, (rx,rear[1]), (earringsxr,earringsy) , col, limblen)
 
         #head pointing left (left eye hidden)
         elif rear and leye:#head circle if right ear is present + faceline
@@ -53,9 +53,9 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             hy = int((rear[1]+leye[1])/2+dx*k3)
             limblen = int((dx+abs(rx-leye[0])/2)*0.4)+1
             cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*k4), col, thickness=-limblen, lineType=8, shift=0)
-            limblen = int((dx+1)*k5)
-            cv2.line(npimg, (leye[0]+dx,leye[1]), (leye[0]+dx,(nose[1]+neck[1])/2) , col, limblen)
-            cv2.line(npimg, (rx-int(dx*k8),rear[1]), (earringsxr-int(dx*k8),earringsy) , col,limblen)
+            #limblen = int((dx+1)*k5)
+            #cv2.line(npimg, (leye[0]+dx,leye[1]), (leye[0]+dx,(nose[1]+neck[1])/2) , col, limblen)
+            #cv2.line(npimg, (rx-int(dx*k8),rear[1]), (earringsxr-int(dx*k8),earringsy) , col,limblen)
 
                 
         elif lear and reye:#head circle if left ear is present + faceline
@@ -68,9 +68,9 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             hy = int((lear[1]+reye[1])/2+dx*k3)               #circle center, slightly above ear
             limblen = int((abs(lx-reyex)/2+dx)*k5)
             cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*k4), col, thickness=-limblen, lineType=8, shift=0)
-            limblen= int((dx+1)*k5)
-            cv2.line(npimg, (reyex+dx,reye[1]), (reyex+dx,(nose[1]+neck[1])/2) , col, limblen)
-            cv2.line(npimg, (lx+int(dx*k8),reye[1]), (earringsxl+int(dx*k8),earringsy) ,col, limblen)
+            #limblen= int((dx+1)*k5)
+            #cv2.line(npimg, (reyex+dx,reye[1]), (reyex+dx,(nose[1]+neck[1])/2) , col, limblen)
+            #cv2.line(npimg, (lx+int(dx*k8),reye[1]), (earringsxl+int(dx*k8),earringsy) ,col, limblen)
         #NECK SIRCLE
         r = ((neck[0]-nose[0])*(neck[0]-nose[0])+(neck[1]-nose[1])*(neck[1]-nose[1]))/200
         cv2.circle(npimg, (neck[0],neck[1]), r, col, thickness=-1, lineType=8, shift=0)

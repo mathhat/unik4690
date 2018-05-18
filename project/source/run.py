@@ -7,7 +7,7 @@ import sys
 sys.path.append("/home/joe/Documents/tf-pose-estimation/src/") 
 sys.path.append("/hdd/MACHINEVIS-OPENPOSE/tf-pose-estimation")
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
-from gradient_estimator import human_canny 
+#from gradient_estimator import human_canny 
 from Laplace_Filter_Deprecated import Laplacian_blend, constructGaussian,constructLaplacian
 import read
 import common
