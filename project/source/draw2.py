@@ -116,15 +116,19 @@ def draw_torso(npimg,Centers,col,parts):
     if lshould and rshould and neck:
         dx = (lshould[0] - rshould[0])
         dy = (lshould[1] - rshould[1])
-
+        d  = int(np.sqrt(dx*dx+dy*dy))
+        angle = np.arctan(dy*1./dx)*180/np.pi
+        cv2.ellipse(npimg,(neck[0],neck[1]),(d/2,int(d*1.5)),angle,0,180,col,-20)
+        
         torso.append([lshould[0],lshould[1]])
         torso.append([rshould[0],rshould[1]])
-        torso.append([neck[0]-dy,neck[1]+int(dx*1.5)]) #normal
+        #torso.append([neck[0]-dy,neck[1]+int(dx*1.5)]) #normal
+        torso.append([neck[0]+dy,neck[1]-int(dx*0.35)])
         torso = np.asarray(torso)
         torso = torso.reshape((-1,1,2),)   
+        #npimg = cv2.fillPoly(npimg,[torso],col)
         npimg = cv2.fillPoly(npimg,[torso],col)
-        torso[-1] = [neck[0]+dy,neck[1]-int(dx*0.35)]
-        npimg = cv2.fillPoly(npimg,[torso],col)
+        
         return npimg
     elif neck and lshould:
         should = lshould 
@@ -136,16 +140,20 @@ def draw_torso(npimg,Centers,col,parts):
         return npimg
     dx = (should[0] - neck[0])*2
     dy = (should[1] - neck[1])*2
-    #cv2.ellipse(npimg,)
+    d  = int(np.sqrt(dx*dx+dy*dy))
+    angle = np.arctan(dy*1./dx)*180/np.pi
+    cv2.ellipse(npimg,(neck[0]+dy/20,neck[1]+dx/20),(d/2,int(d*1.5)),angle,0,180,col,-20)
     
     
+
     torso.append([should[0],should[1]])
     torso.append([should[0]-dx,should[1]-dy])
-    torso.append([neck[0]-dy*minus,neck[1]+int(dx*1.5)*minus]) #normal
+    #torso.append([neck[0]-dy*minus,neck[1]+int(dx*1.5)*minus]) #normal
+    torso.append([neck[0]+dy*minus,neck[1]-int(dx*0.35)*minus])
+    
     torso = np.asarray(torso)
     torso = torso.reshape((-1,1,2),)   
-    npimg = cv2.fillPoly(npimg,[torso],col)
-    torso[-1] = [neck[0]+dy*minus,neck[1]-int(dx*0.35)*minus]
+    #npimg = cv2.fillPoly(npimg,[torso],col)
     npimg = cv2.fillPoly(npimg,[torso],col)
     
     return npimg
