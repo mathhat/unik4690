@@ -64,27 +64,23 @@ if __name__ == '__main__':
         #image2 = cv2.GaussianBlur(image2,(21,21),100,)
         
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
-        '''        
-        if len(centers)>1:  #where the contouring happens (see gradient_estimator.py)
-            contours = human_canny(edges,image2,tol)#returns contours
-            image = cv2.drawContours(image*0, contours, -1, (0,255,255), 1)/255.#draws contours
-
-            cv2.putText(image,
-                        "FPS: %f" % (1.0 / (time.time() - fps_time)),
-                        (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                        (0, 0, 255), 2)
-
-            cv2.imshow('tf-pose-estimation result', image)
         
-        '''
+        
+        cv2.putText(image,
+                    "FPS: %f" % (1.0 / (time.time() - fps_time)),
+                    (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                    (0, 0, 255), 2)
+
+        
+ 
         #background = np.zeros_like(image2)
         # image2 burde her være "dukka" eller masken til hele greia. 
         # dersom den ikke er der vil man bare få det ene bildet diretke 
         
         image3 = Laplacian_blend(imbw, back,image2)
-        image3 = cv2.threshold(image3,0.,255,cv2.THRESH_TOZERO)[1]
+        #image3 = cv2.threshold(image3,0.,255,cv2.THRESH_TOZERO)[1]
         
-        cv2.imshow('tf-pose-estimation result',image2)
+        cv2.imshow('tf-pose-estimation result',image3)
 
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
