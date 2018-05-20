@@ -5,6 +5,28 @@ import numpy as np
 import read
 
 
+def eye_jaw(img, eye, ear, col): 
+    # let's test some shit: 
+    #shoudl be general for both right or left. 
+    # points to vector (x, y) (x', y')
+    # (x' - x) = dist in x-direction 
+    # (y' - y) = dist in y-direrction 
+    # v' - v = vector from v to v'
+    x0 = ear[0]
+    y0 = ear[1]
+    x_eye = eye[0]
+    y_eye = eye[1]
+    #proportion = lambda (x_diff,y_diff) :   
+    ear_down = (x0 - (y_eye - y0) , y0 + (x_eye - x0))  
+    eye_down = (x_eye - (y_eye - y0) , y_eye + (x_eye - x0))
+    vertices = np.asarray([[ear, ear_down, eye_down, eye]]) #corners in order.
+    print vertices
+    print vertices.shape
+    cv2.fillPoly(img, vertices, col)
+    #meat of situation: 
+    # if eye and ear, construct square/poly from the vertices 
+    # imposed of translation "downwards" and some angles. 
+
 def draw_head(npimg,Centers,col,bol,k=[0]):
     tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
     lear = tryvar(17)
@@ -85,6 +107,11 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.65))  ,-angle+20,0,360,col,-1)
             #cv2.ellipse(npimg,(hx,hy2),(int(abs(nose[0]-lx)*k4*0.85),int(abs(nose[0]-lx)*k4*0.65))  ,20,0,360,col,-1)
 
+        else: #assume ear + eye combo 
+            if (leye and lear):
+                eye_jaw(npimg, leye,lear,col)
+            elif (reye and rear):
+                eye_jaw(npimg, reye, rear,col)
     return npimg
 
 
@@ -175,7 +202,7 @@ def draw_humans(npimg, humans,bol=1,k=[0]): #main function
             center = (int(body_part.x * image_w + 0.5), int(body_part.y * image_h + 0.5))
             centers[i] = center
             Centers[i] = center
-        npimg = draw_head(npimg,Centers,col,bol,k) #draws head
+        npimg = draw_head(npimg,Centers,col,bol,k) #draws head (with internal jaw-line)
         npimg = draw_limbs(npimg,Centers,col,parts) #draws arms and legs
         npimg = draw_torso(npimg,Centers,col,parts) #sigh
     return npimg, centers
