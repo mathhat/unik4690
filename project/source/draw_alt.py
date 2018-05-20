@@ -18,7 +18,6 @@ def eye_jaw(img, eye, ear, col):
     y_eye = eye[1] 
     h,w = img.shape # maximal indices for h and w. 
     #proportion = lambda (x_diff,y_diff) :   
-<<<<<<< HEAD
     # rotation matrix = [cos t, - sin t],[sin t, cos t]
     # dependency on orientation:
     # matrix count x left->right , y top->bottom
@@ -50,15 +49,9 @@ def eye_jaw(img, eye, ear, col):
     #elif ear_down[0] > img[0][-1]: 
     #    ear_down[0] = img[0][-1]
   
-=======
-    ear_down = (x0 - (y_eye - y0) , y0 + (x_eye - x0))  
-    eye_down = (x_eye - (y_eye - y0) , y_eye + (x_eye - x0))
-    vertices = np.asarray([[ear, ear_down, eye_down, eye]]) #corners in order.
-    #print vertices
-    #print vertices.shape
->>>>>>> 42bb6809958dd85e5fe1cfc81037bbbf84142862
     cv2.fillPoly(img, vertices, col)
-    return img
+    
+
 def draw_head(npimg,Centers,col,bol,k=[0]):
     tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
     lear = tryvar(17)
@@ -139,11 +132,11 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.65))  ,-angle+20,0,360,col,-1)
             #cv2.ellipse(npimg,(hx,hy2),(int(abs(nose[0]-lx)*k4*0.85),int(abs(nose[0]-lx)*k4*0.65))  ,20,0,360,col,-1)
 
-        #assume ear + eye combo 
-        if (leye and lear):
-            npimg = eye_jaw(npimg, leye,lear,col)
-        elif (reye and rear):
-            npimg = eye_jaw(npimg, reye, rear,col)
+        else: #assume ear + eye combo 
+            if (leye and lear):
+                eye_jaw(npimg, leye,lear,col)
+            elif (reye and rear):
+                eye_jaw(npimg, reye, rear,col)
     return npimg
 
 
@@ -194,10 +187,9 @@ def draw_torso(npimg,Centers,col,parts):
         minus = 1
     elif neck and rshould:
         should = rshould
+        
     else:
         return npimg
-    #else:
-    #    return npimg
     dx = (should[0] - neck[0])*2
     dy = (should[1] - neck[1])*2
     d  = int(np.sqrt(dx*dx+dy*dy))

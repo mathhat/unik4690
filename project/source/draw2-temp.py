@@ -93,8 +93,8 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             #cv2.line(npimg, (reyex+dx,reye[1]), (reyex+dx,(nose[1]+neck[1])/2) , col, limblen)
             #cv2.line(npimg, (lx+int(dx*k8),reye[1]), (earringsxl+int(dx*k8),earringsy) ,col, limblen)
         #NECK SIRCLE
-        r = ((neck[0]-nose[0])*(neck[0]-nose[0])+(neck[1]-nose[1])*(neck[1]-nose[1]))/200
-        cv2.circle(npimg, (neck[0],neck[1]), r, col, thickness=-1, lineType=8, shift=0)
+        #r = ((neck[0]-nose[0])*(neck[0]-nose[0])+(neck[1]-nose[1])*(neck[1]-nose[1]))/200
+        #cv2.circle(npimg, (neck[0],neck[1]), r, col, thickness=-1, lineType=8, shift=0)
 
     return npimg
 
