@@ -12,16 +12,43 @@ def eye_jaw(img, eye, ear, col):
     # (x' - x) = dist in x-direction 
     # (y' - y) = dist in y-direrction 
     # v' - v = vector from v to v'
-    x0 = ear[0]
-    y0 = ear[1]
+    x_ear = ear[0]
+    y_ear = ear[1]
     x_eye = eye[0]
-    y_eye = eye[1]
+    y_eye = eye[1] 
+    h,w = img.shape # maximal indices for h and w. 
     #proportion = lambda (x_diff,y_diff) :   
-    ear_down = (x0 - (y_eye - y0) , y0 + (x_eye - x0))  
-    eye_down = (x_eye - (y_eye - y0) , y_eye + (x_eye - x0))
-    vertices = np.asarray([[ear, ear_down, eye_down, eye]]) #corners in order.
-    print vertices
-    print vertices.shape
+    # rotation matrix = [cos t, - sin t],[sin t, cos t]
+    # dependency on orientation:
+    # matrix count x left->right , y top->bottom
+    if x_ear < x_eye:
+        #facing right (on screen/in matrix)
+        bottom_left = (x_ear - (y_eye - y_ear), 
+                       y_ear - (x_eye - x_ear))
+        bottom_right = (x_eye - (y_ear - y_eye), 
+                        y_eye - (x_ear - y_eye))
+        #order, ear - bl - br - eye
+        vertices = np.asarray([[ear, 
+                                bottom_left,
+                                bottom_right, 
+                                eye]])
+        
+    elif x_ear > x_eye: 
+        bottom_left = (x_eye - (y_ear - y_eye), 
+                       y_eye - (x_ear - x_eye))
+        bottom_right = (x_ear - (y_eye - y_ear), 
+                        y_ear - (x_eye - y_ear))
+        #order, ear - br - bl - eye
+        vertices = np.asarray([[ear, 
+                                bottom_right,
+                                bottom_left, 
+                                eye]])
+    #Check not outside image: 
+    #if bottom_[0] > img[0][-1]: 
+    #    eye_down[0] = img[0][-1]
+    #elif ear_down[0] > img[0][-1]: 
+    #    ear_down[0] = img[0][-1]
+  
     cv2.fillPoly(img, vertices, col)
     
 
