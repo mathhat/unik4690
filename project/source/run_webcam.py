@@ -45,6 +45,9 @@ if __name__ == '__main__':
         ret_val, image = cam.read()
         humans = e.inference(image)
         imbw = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)/255.
+        #JOSEPH: 
+        # Hvorfor sender vi inn et fargebilde til denne ? 
+        # spes- siden vi endrer det til sort-hvitt rett etter... 
         image2,centers = draw_humans(image.copy(), humans,1)        
         image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
         
@@ -59,7 +62,7 @@ if __name__ == '__main__':
                 
         cv2.imshow('tf-pose-estimation result',image3)
         fps_time = time.time()
-        if cv2.waitKey(0) == 27:
+        if cv2.waitKey(1) == 27:
             break
        
     cv2.destroyAllWindows()
