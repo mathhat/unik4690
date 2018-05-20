@@ -83,6 +83,7 @@ if __name__ == '__main__':
         cv2.imshow('tf-pose-estimation result',image3)
 
         fps_time = time.time()
-        if cv2.waitKey(1) == 27:
+        if cv2.waitKey(0) == 27:
             break
     cv2.destroyAllWindows()
+    cam.release()

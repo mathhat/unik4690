@@ -23,9 +23,7 @@ def eye_jaw(img, eye, ear, col):
     print vertices
     print vertices.shape
     cv2.fillPoly(img, vertices, col)
-    #meat of situation: 
-    # if eye and ear, construct square/poly from the vertices 
-    # imposed of translation "downwards" and some angles. 
+    
 
 def draw_head(npimg,Centers,col,bol,k=[0]):
     tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
