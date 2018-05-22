@@ -37,7 +37,9 @@ if __name__ == '__main__':
     while True:
         ret_val, image = cam.read()
         humans = e.inference(image)
-        image2,centers = draw_humans(image.copy(), humans,1)     
+        image2_tmp,centers = draw_humans(image.copy(), humans,1)
+        if np.any(image2_tmp > 0):
+            image2=image2_tmp
         image3 = Laplacian_blend(image/255., back/255.,image2/255.)
         
         cv2.putText(image3,
