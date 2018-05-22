@@ -192,12 +192,13 @@ def draw_torso(npimg,Centers,col,parts):
         torso.append([lshould[0],lshould[1]])
         torso.append([rshould[0],rshould[1]])
         #torso.append([neck[0]-dy,neck[1]+int(dx*1.5)]) #normal
-        torso.append([neck[0]+dy,neck[1]-int(dx*0.35)])
+        torso.append([neck[0]+dy/2,neck[1]-int(dx*0.35)])
         torso = np.asarray(torso)
         torso = torso.reshape((-1,1,2),)
         #npimg = cv2.fillPoly(npimg,[torso],col)
         npimg = cv2.fillPoly(npimg,[torso],col)
-        
+        cv2.line(npimg,(rshould[0],rshould[1]),(lshould[0],lshould[1]),col,d/7)
+
         return npimg
     elif neck and lshould:
         should = lshould 
@@ -206,27 +207,27 @@ def draw_torso(npimg,Centers,col,parts):
         should = rshould
     else:
         return npimg
-    #else:
-    #    return npimg
+    #this code runs if only one shoulder is observed
     dx = (should[0] - neck[0])*2
     dy = (should[1] - neck[1])*2
     d  = int(np.sqrt(dx*dx+dy*dy))
     if dx and dy:
         angle = np.arctan(dy*1./dx)*180/np.pi
-    cv2.ellipse(npimg,(neck[0]+dy/10,neck[1]+dx/10),(d/2,int(d*1.5)),angle,0,180,col,-20)
-    
+    #cv2.ellipse(npimg,(neck[0]+dy/5*minus,neck[1]+dx/5*minus),(d/2,int(d*1.5)),angle,0,180,col,-1)
+    cv2.ellipse(npimg,(should[0] - dx/2,should[1] + dy/2),(d/2,int(d*1.5)),angle,0,180,col,-1)
     
 
     torso.append([should[0],should[1]])
     torso.append([should[0]-dx,should[1]-dy])
     #torso.append([neck[0]-dy*minus,neck[1]+int(dx*1.5)*minus]) #normal
-    torso.append([neck[0]+dy*minus,neck[1]-int(dx*0.35)*minus])
+    torso.append([neck[0]+dy/2*minus,neck[1]-int(dx*0.35)*minus])
     
     torso = np.asarray(torso)
     torso = torso.reshape((-1,1,2),)   
     #npimg = cv2.fillPoly(npimg,[torso],col)
     npimg = cv2.fillPoly(npimg,[torso],col)
-    
+    cv2.line(npimg,(should[0],should[1]),(should[0]-dx,should[1]-dy),col,d/7)
+
     return npimg
 
 def draw_humans(npimg, humans,bol=1,k=[0]): #main function
@@ -246,6 +247,9 @@ def draw_humans(npimg, humans,bol=1,k=[0]): #main function
             center = (int(body_part.x * image_w + 0.5), int(body_part.y * image_h + 0.5))
             centers[i] = center
             Centers[i] = center
+
+            #cv2.circle(npimg, center, 3, common.CocoColors[i], thickness=7, lineType=8, shift=0)
+
         npimg = draw_head(npimg,Centers,col,bol,k) #draws head (with internal jaw-line)
         npimg = draw_limbs(npimg,Centers,col,parts) #draws arms and legs
         npimg = draw_torso(npimg,Centers,col,parts) #sigh

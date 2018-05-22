@@ -280,7 +280,7 @@ class TfPoseEstimator:
 
     def __del__(self):
         self.persistent_sess.close()
-    '''
+    
     @staticmethod
     def _quantize_img(npimg):
         npimg_q = npimg + 1.0
@@ -288,7 +288,7 @@ class TfPoseEstimator:
         # npimg_q += 0.5
         npimg_q = npimg_q.astype(np.uint8)
         return npimg_q
-
+    '''
     @staticmethod
     def draw_humans(npimg, humans, imgcopy=False,):
         if imgcopy:
