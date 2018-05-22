@@ -35,7 +35,7 @@ if __name__ == '__main__':
     cam = cv2.VideoCapture(args.camera)
     ret_val, image = cam.read()
     back  = common.read_imgfile(args.back,None,None)
-    back= cv2.cvtColor(back, cv2.COLOR_BGR2GRAY)/255.
+    #back= cv2.cvtColor(back, cv2.COLOR_BGR2GRAY)/255.
     #cv2.namedWindow('tf-pose-estimation result')
     #back[:w,:h]
 
@@ -44,14 +44,18 @@ if __name__ == '__main__':
     while True:
         ret_val, image = cam.read()
         humans = e.inference(image)
-        imbw = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)/255.
+        #imbw = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)/255.
         #JOSEPH: 
         # Hvorfor sender vi inn et fargebilde til denne ? 
-        # spes- siden vi endrer det til sort-hvitt rett etter... 
-        image2,centers = draw_humans(image.copy(), humans,1)        
-        image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
+        # spes- siden vi endrer det til sort-hvitt rett etter
+        #jack:
+        # godt spørsmål, jeg tror tegning bare fungerer på fargebilder
+        # tror jeg har tatt feil, men når jeg prøver å sende inn imbw så skjer skumle saker tho
+        image2,centers = draw_humans(image.copy(), humans,1)     
+        #image2= cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)/255.
         
-        image3 = Laplacian_blend(imbw, back,image2)
+        #back = np.zeros_like(image2)
+        image3 = Laplacian_blend(image/255., back/255.,image2/255.)
         #image3 = cv2.threshold(image3,0.,255,cv2.THRESH_TOZERO)[1]
         
         cv2.putText(image3,
@@ -59,8 +63,7 @@ if __name__ == '__main__':
                     (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     (0, 0, 255), 2)
 
-                
-        cv2.imshow('tf-pose-estimation result',image3)
+        cv2.imshow('tf-pose-estimation result',image2)
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
             break

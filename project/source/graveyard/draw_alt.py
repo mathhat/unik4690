@@ -16,60 +16,42 @@ def eye_jaw(img, eye, ear, col):
     y_ear = ear[1]
     x_eye = eye[0]
     y_eye = eye[1] 
-    #h,w = img.shape # maximal indices for h and w. 
+    h,w = img.shape # maximal indices for h and w. 
     #proportion = lambda (x_diff,y_diff) :   
     # rotation matrix = [cos t, - sin t],[sin t, cos t]
-    # rot 90 c-clockwise => x,y => y,-x -- (x - x0, y - y_0)
-    # rot 90   clockwise => x,y => -y,x -- (y - y_0, x - x0)
     # dependency on orientation:
     # matrix count x left->right , y top->bottom
     if x_ear < x_eye:
-        #facing right (on screen/in matrix) re: good call, fakin hate the mirror effect
-        #x - x_0 = x_eye - x_ear = dx
-        #y - y_0 = y_eye - y_ear = dy
-        dx = x_eye - x_ear
-        dy = y_eye - y_ear # to get specific distance
-        dd = np.sqrt(dx*dx+dy*dy)
-        bottom_left = (x_ear - dy, 
-                       y_ear + dx)
-        bottom_right = (x_eye - dy - int(dd*1./5), #correctional term - joe
-                        y_eye + dx  - int(dd*1./5))
+        #facing right (on screen/in matrix)
+        bottom_left = (x_ear - (y_eye - y_ear), 
+                       y_ear - (x_eye - x_ear))
+        bottom_right = (x_eye - (y_ear - y_eye), 
+                        y_eye - (x_ear - y_eye))
         #order, ear - bl - br - eye
-        
         vertices = np.asarray([[ear, 
                                 bottom_left,
                                 bottom_right, 
                                 eye]])
-        cv2.fillPoly(img, vertices, col)
-
-    elif x_ear > x_eye: 
-        #facing left (on screen/in matrix)
-        #x - x_0 = x_ear - x_eye = dx
-        #y - y_0 = y_ear - y_eye = dy
-        dx = x_ear - x_eye
-        dy = y_ear - y_eye
-        dd = np.sqrt(dx*dx+dy*dy)
-        #L = len(img[0])
         
-        bottom_left = (x_eye - dy+int(dd*1./5), 
-                       y_eye + dx - int(dd*1./5))
-        bottom_right = (x_ear - dy,
-                        y_ear + dx)
+    elif x_ear > x_eye: 
+        bottom_left = (x_eye - (y_ear - y_eye), 
+                       y_eye - (x_ear - x_eye))
+        bottom_right = (x_ear - (y_eye - y_ear), 
+                        y_ear - (x_eye - y_ear))
         #order, ear - br - bl - eye
         vertices = np.asarray([[ear, 
                                 bottom_right,
                                 bottom_left, 
                                 eye]])
-        cv2.fillPoly(img, vertices, col)
     #Check not outside image: 
     #if bottom_[0] > img[0][-1]: 
     #    eye_down[0] = img[0][-1]
     #elif ear_down[0] > img[0][-1]: 
     #    ear_down[0] = img[0][-1]
   
+    cv2.fillPoly(img, vertices, col)
+    
 
-    #cv2.fillPoly(img, vertices, col)
-    return img
 def draw_head(npimg,Centers,col,bol,k=[0]):
     tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
     lear = tryvar(17)
@@ -93,9 +75,9 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             hx = (lx + rx)/2 #Nope
             angle = 0
             dy = lear[1]-rear[1]
-            dx = float(lx-rx)
-            if dy and dx: 
-                taneyes = dy/dx #Bruker heller tangens her for å få en relativ vinkel.
+
+            if dy: 
+                taneyes = dy/float(lx-rx) #Bruker heller tangens her for å få en relativ vinkel.
                 angle = np.arctan(taneyes)*180/np.pi
 
             # Plasser etterpå "midpunktet" "over" basert på vinkel. 
@@ -115,30 +97,30 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             dx = leye[0]-rx#/10+1 #dist between ear n eye
             dy = (leye[1]-rear[1])
             angle = 0
-            if dy and dx:
+            if dy:
                 tan = dy/float(dx)
                 angle = np.arctan(tan)*180/np.pi
             dx = int(np.linalg.norm(np.array(rear)-np.array(leye)))
           
           
-            
-            hx = int(rx+dx/10.*4*k7*0.95) #- dx*20 / (rx-leye[0]))
+          
+            hx = int(rx+dx/10.*4*k7*0.9) #- dx*20 / (rx-leye[0]))
             #Jacob's magic circle coord (next to ear) ?? wtf. fight me
             hy = int((rear[1]+leye[1])/2+dx/10.*k3*1.6)
             hy2 = hy - dx/10
 
             #limblen = int((dx+abs(rx-leye[0])/2)*0.4)+1
             #cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*k4), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.73))  ,-angle-20,0,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.65))  ,-angle-20,0,360,col,-1)
             #cv2.ellipse(npimg,(hx,hy2),(int(abs(nose[0]-rx)*k4*0.85),int(abs(nose[0]-rx)*k4*0.65))  ,-20,0,360,col,-1)
-            eye_jaw(npimg,leye,rear, col)
+                
         elif lear and reye:#head circle if left ear is present + faceline
             lx = lear[0]
             reyex = reye[0] 
             dx = (lx-reyex)#/10+1
             dy = (lear[1]-reye[1])
             angle = 0
-            if dy and dx:
+            if dy:
                 tan = dy/float(dx)
                 angle = np.arctan(tan)*180/np.pi
             dx = int(np.linalg.norm(np.array(lear)-np.array(reye)))
@@ -147,11 +129,14 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             hy2 = hy - dx/10
             #limblen = int((abs(lx-reyex)/2+dx)*k5)
             #cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*k4), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.73))  ,-angle+20,0,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.65))  ,-angle+20,0,360,col,-1)
             #cv2.ellipse(npimg,(hx,hy2),(int(abs(nose[0]-lx)*k4*0.85),int(abs(nose[0]-lx)*k4*0.65))  ,20,0,360,col,-1)
-            eye_jaw(npimg,reye,lear, col)
 
-    
+        else: #assume ear + eye combo 
+            if (leye and lear):
+                eye_jaw(npimg, leye,lear,col)
+            elif (reye and rear):
+                eye_jaw(npimg, reye, rear,col)
     return npimg
 
 
@@ -179,22 +164,20 @@ def draw_torso(npimg,Centers,col,parts):
     rshould = tryvar(2)
     neck = tryvar(1)
     minus = -1
-    angle = 0
-
+    
     if lshould and rshould and neck:
         dx = (lshould[0] - rshould[0])
         dy = (lshould[1] - rshould[1])
         d  = int(np.sqrt(dx*dx+dy*dy))
-        if dx and dy:
-            angle = np.arctan(dy*1./dx)*180/np.pi
-        cv2.ellipse(npimg,(neck[0],(lshould[1]+rshould[1])/2),(d/2,int(d*1.5)),angle,0,180,col,-20)
+        angle = np.arctan(dy*1./dx)*180/np.pi
+        cv2.ellipse(npimg,(neck[0],neck[1]),(d/2,int(d*1.5)),angle,0,180,col,-20)
         
         torso.append([lshould[0],lshould[1]])
         torso.append([rshould[0],rshould[1]])
         #torso.append([neck[0]-dy,neck[1]+int(dx*1.5)]) #normal
         torso.append([neck[0]+dy,neck[1]-int(dx*0.35)])
         torso = np.asarray(torso)
-        torso = torso.reshape((-1,1,2),)
+        torso = torso.reshape((-1,1,2),)   
         #npimg = cv2.fillPoly(npimg,[torso],col)
         npimg = cv2.fillPoly(npimg,[torso],col)
         
@@ -204,16 +187,14 @@ def draw_torso(npimg,Centers,col,parts):
         minus = 1
     elif neck and rshould:
         should = rshould
+        
     else:
         return npimg
-    #else:
-    #    return npimg
     dx = (should[0] - neck[0])*2
     dy = (should[1] - neck[1])*2
     d  = int(np.sqrt(dx*dx+dy*dy))
-    if dx and dy:
-        angle = np.arctan(dy*1./dx)*180/np.pi
-    cv2.ellipse(npimg,(neck[0]+dy/10,neck[1]+dx/10),(d/2,int(d*1.5)),angle,0,180,col,-20)
+    angle = np.arctan(dy*1./dx)*180/np.pi
+    cv2.ellipse(npimg,(neck[0]+dy/20,neck[1]+dx/20),(d/2,int(d*1.5)),angle,0,180,col,-20)
     
     
 
