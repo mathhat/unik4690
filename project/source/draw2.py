@@ -29,7 +29,7 @@ def eye_jaw(img, eye, ear, col):
         #y - y_0 = y_eye - y_ear = dy
         dx = x_eye - x_ear
         dy = y_eye - y_ear # to get specific distance
-        dd = np.sqrt(dx*dx+dy*dy)
+        dd = int(np.sqrt(dx*dx+dy*dy))
         bottom_left = (x_ear - dy, 
                        y_ear + dx)
         bottom_right = (x_eye - dy - int(dd*1./5), #correctional term - joe
@@ -39,7 +39,7 @@ def eye_jaw(img, eye, ear, col):
         vertices = np.asarray([[ear, 
                                 bottom_left,
                                 bottom_right, 
-                                eye]])
+                                (eye[0]+dd/10,eye[1])]])
         cv2.fillPoly(img, vertices, col)
 
     elif x_ear > x_eye: 
@@ -48,7 +48,7 @@ def eye_jaw(img, eye, ear, col):
         #y - y_0 = y_ear - y_eye = dy
         dx = x_ear - x_eye
         dy = y_ear - y_eye
-        dd = np.sqrt(dx*dx+dy*dy)
+        dd = int(np.sqrt(dx*dx+dy*dy))
         #L = len(img[0])
         
         bottom_left = (x_eye - dy+int(dd*1./5), 
@@ -59,7 +59,7 @@ def eye_jaw(img, eye, ear, col):
         vertices = np.asarray([[ear, 
                                 bottom_right,
                                 bottom_left, 
-                                eye]])
+                                (eye[0]-dd/10,eye[1])]])
         cv2.fillPoly(img, vertices, col)
     #Check not outside image: 
     #if bottom_[0] > img[0][-1]: 
