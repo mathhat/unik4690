@@ -9,7 +9,7 @@ sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 #from gradient_estimator import human_canny 
 from Laplace_Filter_Deprecated import Laplacian_blend, constructGaussian,constructLaplacian
 import read
-
+import images
 
 import cv2
 import numpy as np
@@ -34,6 +34,9 @@ if __name__ == '__main__':
     back  = common.read_imgfile(args.back,None,None)
     
     tol1,tol2,tol = read.Tol()
+    humans = e.inference(image)
+    image2,centers = draw_humans(image.copy(), humans,1)
+
     while True:
         ret_val, image = cam.read()
         humans = e.inference(image)
@@ -46,8 +49,8 @@ if __name__ == '__main__':
                     "FPS: %f" % (1.0 / (time.time() - fps_time)),
                     (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     (0, 0, 255), 2)
-
-        cv2.imshow('tf-pose-estimation result',image2)
+        image3 = images.cpp_normalize(image3)
+        cv2.imshow('tf-pose-estimation result',image3)
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
             break

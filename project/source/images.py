@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from numpy import *
-
+from numba import njit
 # Generic image functionality
 
 def imread( filename, format=''):
@@ -27,7 +27,20 @@ def mapto01(X):
     minval, maxval = X.min(), X.max()
     X -= minval
     X /= (maxval-minval)
-    
+
+@njit #c++ boi
+def cpp_normalize(image):
+    mex = 0
+    h,w = image.shape[:2]
+    for i in range(w):
+        for j in range(h):
+            it = image[j,i,0]+image[j,i,2]+image[j,i,2]
+            if it > mex:
+                mex = it
+    image /= mex
+    return image*255
+
+
 def contrastadjust(X,epsilon):
     """
     Assumes that the values are in [0,255]
