@@ -50,7 +50,7 @@ if __name__ == '__main__':
                     (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     (0, 0, 255), 2)
         image3 = images.cpp_normalize(image3)
-        cv2.imshow('tf-pose-estimation result',image3)
+        cv2.imshow('tf-pose-estimation result',image2)
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
             break

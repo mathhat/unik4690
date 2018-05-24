@@ -197,7 +197,7 @@ def draw_torso(npimg,Centers,col,parts):
         torso = torso.reshape((-1,1,2),)
         #npimg = cv2.fillPoly(npimg,[torso],col)
         npimg = cv2.fillPoly(npimg,[torso],col)
-        cv2.line(npimg,(rshould[0],rshould[1]),(lshould[0],lshould[1]),col,d/7)
+        cv2.line(npimg,(rshould[0]-dy/15,rshould[1]+dx/15),(lshould[0]-dy/15,lshould[1]+dx/15),col,d/6)
 
         return npimg
     elif neck and lshould:
