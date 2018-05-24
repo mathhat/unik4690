@@ -104,8 +104,9 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             hy =  int((rear[1]+lear[1])/2)#-dx/k2) #nope  #fight me
             hy2 = hy - int(dx / 2.5)
             #limblen= int(dx/4)+1
+            l =8.*dx/(abs(nose[1]-neck[1])+1)
             #cv2.circle(npimg, (hx,hy), int(abs(dx*k1)), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5)) ,angle,180,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5+l)) ,angle,180,360,col,-1)
             cv2.ellipse(npimg,(hx+int(angle),hy2),(int(dx*k1/1.2),int(dx*k1/1.3))  ,angle,180,360,col,-1)
             
         #head pointing left (left eye hidden)
@@ -206,9 +207,6 @@ def draw_torso(npimg,Centers,col,parts):
         should = rshould
     else:
         return npimg
-    
-
-    
     #this code runs if only one shoulder is observed
     dx = (should[0] - neck[0])*2
     dy = (should[1] - neck[1])*2
