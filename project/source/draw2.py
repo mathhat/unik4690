@@ -106,7 +106,7 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             #limblen= int(dx/4)+1
             l =8.*dx/(abs(nose[1]-neck[1])+1)
             #cv2.circle(npimg, (hx,hy), int(abs(dx*k1)), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5+l)) ,angle,180,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5+l)) ,angle,0,360,col,-1)
             cv2.ellipse(npimg,(hx+int(angle),hy2),(int(dx*k1/1.2),int(dx*k1/1.3))  ,angle,180,360,col,-1)
             
         #head pointing left (left eye hidden)
@@ -157,6 +157,50 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
 
 
 
+def draw_hands(npimg,Centers,col):
+    tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
+    lw = tryvar(7)
+    rbow = tryvar(6)
+    rw = tryvar(4)
+    rbow = tryvar(3)
+
+    if rw and rbow:
+        x1 = rbow[0]
+        x2 = rw[0]
+        y1 = rbow[1]
+        y2 = rw[1]
+        dx = x2-x1
+        dy = y2-y1 
+        angle = 0
+        if dy*dx:
+            tan = float(dx)/dy
+            angle = np.arctan(tan)*180/np.pi
+
+        d = int(np.sqrt((dy)**2+(dx)**2))
+
+        cv2.line(npimg, (x1,y1), (x2,y2), col, d/2)
+        cv2.ellipse(npimg,(x2,y2),d,d/2,angle,180,360,col,-1)
+
+    if lw and lbow:
+        x1 = lbow[0]
+        x2 = lw[0]
+        y1 = lbow[1]
+        y2 = lw[1]
+        dx = x2-x1
+        dy = y2-y1 
+        angle = 0
+        if dy*dx:
+            tan = float(dx)/dy
+            angle = np.arctan(tan)*180/np.pi
+
+        d = int(np.sqrt((dy)**2+(dx)**2))
+
+        cv2.line(npimg, (x1,y1), (x2,y2), col, d/2)
+        cv2.ellipse(npimg,(x2,y2),d,d/2,angle,180,360,col,-1)
+
+    return npimg
+
+
 def draw_limbs(npimg,Centers,col,parts):
     for pair_order, pair in enumerate(common.CocoPairsRender):
         if pair[0] not in parts or pair[1] not in parts:
@@ -166,12 +210,13 @@ def draw_limbs(npimg,Centers,col,parts):
         y0 = Centers[pair[0]][1]
         y1 = Centers[pair[1]][1]
         
-        d = int(np.sqrt((y1-y0)**2+(x1-x0)**2)/2.5)
+        d = int(np.sqrt((y1-y0)**2+(x1-x0)**2)/2.7)
 
-        npimg = cv2.line(npimg, (x0,y0), (x1,y1), col, d)
+        cv2.line(npimg, (x0,y0), (x1,y1), col, d)
     return npimg
 
-def draw_torso(npimg,Centers,col,parts):
+
+def draw_torso(npimg,Centers,col):
     #i = 0
     torso = []
     tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
@@ -196,15 +241,17 @@ def draw_torso(npimg,Centers,col,parts):
         torso = np.asarray(torso)
         torso = torso.reshape((-1,1,2),)
         #npimg = cv2.fillPoly(npimg,[torso],col)
-        npimg = cv2.fillPoly(npimg,[torso],col)
+        cv2.fillPoly(npimg,[torso],col)
         cv2.line(npimg,(rshould[0]-dy/15,rshould[1]+dx/15),(lshould[0]-dy/15,lshould[1]+dx/15),col,d/6)
-
         return npimg
+    
     elif neck and lshould:
         should = lshould 
         minus = 1
+        print "feck"
     elif neck and rshould:
         should = rshould
+        print "feck"
     else:
         return npimg
     #this code runs if only one shoulder is observed
@@ -213,8 +260,8 @@ def draw_torso(npimg,Centers,col,parts):
     d  = int(np.sqrt(dx*dx+dy*dy))
     if dx and dy:
         angle = np.arctan(dy*1./dx)*180/np.pi
-    #cv2.ellipse(npimg,(neck[0]+dy/5*minus,neck[1]+dx/5*minus),(d/2,int(d*1.5)),angle,0,180,col,-1)
-    cv2.ellipse(npimg,(should[0] - dx/2,should[1] + dy/2),(d/2,int(d*1.5)),angle,0,180,col,-1)
+    cv2.ellipse(npimg,(neck[0],neck[1]),(d/2,int(d*1.5)),angle,0,180,col,-1)
+    #cv2.ellipse(npimg,(should[0] - dx/2,should[1] + dy/2),(d/2,int(d*1.5)),angle,0,180,col,-1)
     
 
     torso.append([should[0],should[1]])
@@ -225,7 +272,7 @@ def draw_torso(npimg,Centers,col,parts):
     torso = np.asarray(torso)
     torso = torso.reshape((-1,1,2),)   
     #npimg = cv2.fillPoly(npimg,[torso],col)
-    npimg = cv2.fillPoly(npimg,[torso],col)
+    cv2.fillPoly(npimg,[torso],col)
     cv2.line(npimg,(should[0],should[1]),(should[0]-dx,should[1]-dy),col,d/7)
 
     return npimg
@@ -233,7 +280,6 @@ def draw_torso(npimg,Centers,col,parts):
 def draw_humans(npimg, humans,bol=1,k=[0]): #main function
     npimg *=0
     image_h, image_w = npimg.shape[:2]
-    centers = {}
     col = [255,255,255]
     for human in humans:
         # draw point
@@ -245,12 +291,11 @@ def draw_humans(npimg, humans,bol=1,k=[0]): #main function
 
             body_part = human.body_parts[i]
             center = (int(body_part.x * image_w + 0.5), int(body_part.y * image_h + 0.5))
-            centers[i] = center
             Centers[i] = center
 
-            #cv2.circle(npimg, center, 3, common.CocoColors[i], thickness=7, lineType=8, shift=0)
+            cv2.circle(npimg, center, 3, common.CocoColors[i], thickness=7, lineType=8, shift=0)
 
-        npimg = draw_head(npimg,Centers,col,bol,k) #draws head (with internal jaw-line)
-        npimg = draw_limbs(npimg,Centers,col,parts) #draws arms and legs
-        npimg = draw_torso(npimg,Centers,col,parts) #sigh
-    return npimg, centers
+        draw_head(npimg,Centers,col,bol,k) #draws head (with internal jaw-line)
+        draw_limbs(npimg,Centers,col,parts) #draws arms and legs
+        draw_torso(npimg,Centers,col) #sigh
+    return npimg
