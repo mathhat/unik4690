@@ -34,7 +34,7 @@ def cpp_normalize(image):
     h,w = image.shape[:2]
     for i in range(w):
         for j in range(h):
-            it = image[j,i,0]+image[j,i,1]+image[j,i,2]
+            it = image[j,i,0]+image[j,i,2]+image[j,i,2]
             if it > mex:
                 mex = it
     image /= mex

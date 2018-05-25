@@ -35,12 +35,12 @@ if __name__ == '__main__':
     
     tol1,tol2,tol = read.Tol()
     humans = e.inference(image)
-    image2,centers = draw_humans(image.copy(), humans,1)
+    image2 = draw_humans(image.copy(), humans,1)
 
     while True:
         ret_val, image = cam.read()
         humans = e.inference(image)
-        image2_tmp,centers = draw_humans(image.copy(), humans,1)
+        image2_tmp = draw_humans(image.copy(), humans,1)
         if np.any(image2_tmp > 0):
             image2=image2_tmp
         image3 = Laplacian_blend(image/255., back/255.,image2/255.)
@@ -50,7 +50,7 @@ if __name__ == '__main__':
                     (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     (0, 0, 255), 2)
         image3 = images.cpp_normalize(image3)
-        cv2.imshow('tf-pose-estimation result',image3)
+        cv2.imshow('tf-pose-estimation result',image2)
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
             break
