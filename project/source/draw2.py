@@ -90,17 +90,17 @@ def eye_jaw(img, eyes, ears, col):
         #    o        o
         #     o      o
         #     ------> (vector dir)
-        dx = (leye[0] - reye[0])/3.
-        dy = (leye[1] - reye[1])/3.
-        factor = 0.707 / 5.
+        dx = (leye[0] - reye[0])
+        dy = (leye[1] - reye[1])
+        factor = 0.707 / 3.
         bottom_left = (reye[0] - dy, 
                        reye[1] + dx)
         bottom_right = (leye[0] - dy, #note, rotation is here opposite. 
                         leye[1] + dx) 
-        left_corner = (reye[0] + factor*(dx + dy) , 
-                       reye[1] - factor*(dx - dy))
-        right_corner = (leye[0] - factor*(dx + dy) , 
-                        leye[1] + factor*(dx - dy))
+        left_corner = (reye[0] - factor*(dx + dy) , 
+                       reye[1] + factor*(dx - dy))
+        right_corner = (leye[0] + factor*(dx - dy) , 
+                        leye[1] + factor*(dx + dy))
         vertices = np.asarray([[reye,
                                 left_corner,
                                 bottom_left,
