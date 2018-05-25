@@ -92,7 +92,7 @@ def eye_jaw(img, eyes, ears, col):
         #     ------> (vector dir)
         dx = (leye[0] - reye[0])
         dy = (leye[1] - reye[1])
-        factor = 0.707 / 3.
+        factor = 0.707
         bottom_left = (reye[0] - dy, 
                        reye[1] + dx)
         bottom_right = (leye[0] - dy, #note, rotation is here opposite. 
@@ -103,8 +103,8 @@ def eye_jaw(img, eyes, ears, col):
                         leye[1] + factor*(dx + dy))
         vertices = np.asarray([[reye,
                                 left_corner,
-                                bottom_left,
-                                bottom_right,
+                                3*bottom_left,
+                                3*bottom_right,
                                 right_corner,
                                 leye]],dtype=np.int_)
         cv2.fillPoly(img, vertices, col)
