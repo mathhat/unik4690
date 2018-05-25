@@ -51,7 +51,7 @@ if __name__ == '__main__':
                     (0, 0, 255), 2)
         mex = images.cpp_normalize(image3)
         image3/=mex 
-        image*=255
+        image3*=255
         cv2.imshow('tf-pose-estimation result',image2)
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
