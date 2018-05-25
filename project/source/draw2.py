@@ -14,9 +14,9 @@ def eye_jaw(img, eyes, ears, col):
     lear,rear = ears
     #How to establish cases ? 
     # Either we have passed  a 
-    if rear: 
-        x_eye,y_eye = leye
-        x_ear,y_ear = rear  
+    if lear: 
+        x_eye,y_eye = reye
+        x_ear,y_ear = lear  
         #looking left in image. 
         #        >       o 
         #      o
@@ -33,17 +33,17 @@ def eye_jaw(img, eyes, ears, col):
         nose = (x_eye - .707*(dx - dy) , 
                 y_eye - .707*(dx + dy))
         #order, ear - br - bl - nose - eye
-        vertices = np.asarray([[rear, 
+        vertices = np.asarray([[lear, 
                                 bottom_right,
                                 bottom_left, 
                                 nose,
-                                (leye[0]-dd/10,leye[1])]])
+                                (reye[0]-dd/10,reye[1])]],dtype=np.int_)
         cv2.fillPoly(img, vertices, col)
-    elif lear:
+    elif rear:
         # duro duro duro 
         # x_ear < x_eye replaced wioth this. 
-        x_eye, y_eye = reye        
-        x_ear, y_ear = lear 
+        x_eye, y_eye = leye        
+        x_ear, y_ear = rear 
         
         dx = x_eye - x_ear
         dy = y_eye - y_ear # to get specific distance
@@ -52,16 +52,16 @@ def eye_jaw(img, eyes, ears, col):
                        y_ear + dx)
         bottom_right = (x_eye - dy - int(dd*1./5), #correctional term - joe
                         y_eye + dx  - int(dd*1./5))
-        nose = (x_eye - .707*(dx + dy) , 
-                y_eye + .707*(dx - dy))
+        nose = (x_eye - .707*(dx + dy)/5., 
+                y_eye + .707*(dx - dy)/5.)
         
-        vertices = np.asarray([[lear, 
+        vertices = np.asarray([[rear, 
                                 bottom_left,
                                 bottom_right,
                                 nose,
-                                (reye[0]+dd/10,reye[1])]])
+                                (leye[0]+dd/10,leye[1])]],dtype=np.int_)
         cv2.fillPoly(img, vertices, col)
-    else: 
+    elif leye and reye: 
         #assuming we have two eyes. 
         # manipulate eye-vectors to get a smaller vector 
         # vectception ? 
@@ -70,22 +70,23 @@ def eye_jaw(img, eyes, ears, col):
         #    o        o
         #     o      o
         #     ------> (vector dir)
-        dx = reye[0] - leye[0] 
-        dy = reye[1] - leye[1]
+        dx = (reye[0] - leye[0])/3.
+        dy = (reye[1] - leye[1])/3.
+        factor = 0.707 / 5.
         bottom_left = (reye[0] - dy, 
                        reye[1] + dx)
         bottom_right = (leye[0] + dy, #note, rotation is here opposite. 
                         leye[1] - dx) 
-        left_corner = (x_eye - .707*(dx + dy) , 
-                       y_eye + .707*(dx - dy))
-        right_corner = (x_eye + .707*(dx + dy) , 
-                        y_eye - .707*(dx - dy))
+        left_corner = (reye[0] - factor*(dx + dy) , 
+                       reye[1] + factor*(dx - dy))
+        right_corner = (leye[0] + factor*(dx + dy) , 
+                        leye[1] - factor*(dx - dy))
         vertices = np.asarray([[reye,
                                 left_corner,
                                 bottom_left,
                                 bottom_right,
                                 right_corner,
-                                leye]])
+                                leye]],dtype=np.int_)
         cv2.fillPoly(img, vertices, col)
         
     #Check not outside image: 
