@@ -25,7 +25,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tf-pose-estimation realtime webcam')
     parser.add_argument('--camera', type=int, default=0)
     parser.add_argument('--back', type=str, default='Images/black.png')  #../images/p2.jpg')
-    parser.add_argument('--resolution', type=str, default='432x368', help='network input resolution. default=432x368')#def 432 368
+    parser.add_argument('--resolution', type=str, default='640x480', help='network input resolution. default=432x368')#def 432 368
     parser.add_argument('--model', type=str, default='mobilenet_thin', help='cmu / mobilenet_thin')
     args = parser.parse_args()
 
