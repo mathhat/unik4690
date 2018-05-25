@@ -5,28 +5,46 @@ import numpy as np
 import read
 
 
-def eye_jaw(img, eye, ear, col): 
-    # let's test some shit: 
-    #shoudl be general for both right or left. 
-    # points to vector (x, y) (x', y')
-    # (x' - x) = dist in x-direction 
-    # (y' - y) = dist in y-direrction 
-    # v' - v = vector from v to v'
-    x_ear = ear[0]
-    y_ear = ear[1]
-    x_eye = eye[0]
-    y_eye = eye[1] 
-    #h,w = img.shape # maximal indices for h and w. 
-    #proportion = lambda (x_diff,y_diff) :   
-    # rotation matrix = [cos t, - sin t],[sin t, cos t]
-    # rot 90 c-clockwise => x,y => y,-x -- (x - x0, y - y_0)
-    # rot 90   clockwise => x,y => -y,x -- (y - y_0, x - x0)
-    # dependency on orientation:
-    # matrix count x left->right , y top->bottom
-    if x_ear < x_eye:
-        #facing right (on screen/in matrix) re: good call, fakin hate the mirror effect
-        #x - x_0 = x_eye - x_ear = dx
-        #y - y_0 = y_eye - y_ear = dy
+def eye_jaw(img, eyes, ears, col): 
+    #concept: 
+    # introducing a new vector 
+    # need to rewrite for multiple eyes, and possibly ears. 
+    # 
+    leye, reye = eyes
+    lear,rear = ears
+    #How to establish cases ? 
+    # Either we have passed  a 
+    if rear: 
+        x_eye,y_eye = leye
+        x_ear,y_ear = rear  
+        #looking left in image. 
+        #        >       o 
+        #      o
+        #        o       o 
+        dx = x_ear - x_eye
+        dy = y_ear - y_eye
+        dd = int(np.sqrt(dx*dx+dy*dy))
+        
+        
+        bottom_left = (x_eye - dy+int(dd*1./5), 
+                       y_eye + dx - int(dd*1./5))
+        bottom_right = (x_ear - dy,
+                        y_ear + dx)
+        nose = (x_eye - .707*(dx - dy) , 
+                y_eye - .707*(dx + dy))
+        #order, ear - br - bl - nose - eye
+        vertices = np.asarray([[rear, 
+                                bottom_right,
+                                bottom_left, 
+                                nose,
+                                (leye[0]-dd/10,leye[1])]])
+        cv2.fillPoly(img, vertices, col)
+    elif lear:
+        # duro duro duro 
+        # x_ear < x_eye replaced wioth this. 
+        x_eye, y_eye = reye        
+        x_ear, y_ear = lear 
+        
         dx = x_eye - x_ear
         dy = y_eye - y_ear # to get specific distance
         dd = int(np.sqrt(dx*dx+dy*dy))
@@ -34,33 +52,42 @@ def eye_jaw(img, eye, ear, col):
                        y_ear + dx)
         bottom_right = (x_eye - dy - int(dd*1./5), #correctional term - joe
                         y_eye + dx  - int(dd*1./5))
-        #order, ear - bl - br - eye
+        nose = (x_eye - .707*(dx + dy) , 
+                y_eye + .707*(dx - dy))
         
-        vertices = np.asarray([[ear, 
+        vertices = np.asarray([[lear, 
                                 bottom_left,
-                                bottom_right, 
-                                (eye[0]+dd/10,eye[1])]])
-        cv2.fillPoly(img, vertices, col)
-
-    elif x_ear > x_eye: 
-        #facing left (on screen/in matrix)
-        #x - x_0 = x_ear - x_eye = dx
-        #y - y_0 = y_ear - y_eye = dy
-        dx = x_ear - x_eye
-        dy = y_ear - y_eye
-        dd = int(np.sqrt(dx*dx+dy*dy))
-        #L = len(img[0])
-        
-        bottom_left = (x_eye - dy+int(dd*1./5), 
-                       y_eye + dx - int(dd*1./5))
-        bottom_right = (x_ear - dy,
-                        y_ear + dx)
-        #order, ear - br - bl - eye
-        vertices = np.asarray([[ear, 
                                 bottom_right,
-                                bottom_left, 
-                                (eye[0]-dd/10,eye[1])]])
+                                nose,
+                                (reye[0]+dd/10,reye[1])]])
         cv2.fillPoly(img, vertices, col)
+    else: 
+        #assuming we have two eyes. 
+        # manipulate eye-vectors to get a smaller vector 
+        # vectception ? 
+        # Similar as before, i.e. 
+        #     >      <
+        #    o        o
+        #     o      o
+        #     ------> (vector dir)
+        dx = reye[0] - leye[0] 
+        dy = reye[1] - leye[1]
+        bottom_left = (reye[0] - dy, 
+                       reye[1] + dx)
+        bottom_right = (leye[0] + dy, #note, rotation is here opposite. 
+                        leye[1] - dx) 
+        left_corner = (x_eye - .707*(dx + dy) , 
+                       y_eye + .707*(dx - dy))
+        right_corner = (x_eye + .707*(dx + dy) , 
+                        y_eye - .707*(dx - dy))
+        vertices = np.asarray([[reye,
+                                left_corner,
+                                bottom_left,
+                                bottom_right,
+                                right_corner,
+                                leye]])
+        cv2.fillPoly(img, vertices, col)
+        
     #Check not outside image: 
     #if bottom_[0] > img[0][-1]: 
     #    eye_down[0] = img[0][-1]
@@ -108,7 +135,8 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             #cv2.circle(npimg, (hx,hy), int(abs(dx*k1)), col, thickness=-limblen, lineType=8, shift=0)
             cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5+l)) ,angle,0,360,col,-1)
             cv2.ellipse(npimg,(hx+int(angle),hy2),(int(dx*k1/1.2),int(dx*k1/1.3))  ,angle,180,360,col,-1)
-            
+            # Addition; jawline from helper funct. 
+            eye_jaw(npimg, [leye,reye], [False,False], col)
         #head pointing left (left eye hidden)
         elif rear and leye:#head circle if right ear is present + faceline
             rx = rear[0]          
@@ -131,7 +159,7 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             #cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*k4), col, thickness=-limblen, lineType=8, shift=0)
             cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.73))  ,-angle-20,0,360,col,-1)
             #cv2.ellipse(npimg,(hx,hy2),(int(abs(nose[0]-rx)*k4*0.85),int(abs(nose[0]-rx)*k4*0.65))  ,-20,0,360,col,-1)
-            eye_jaw(npimg,leye,rear, col)
+            eye_jaw(npimg,[leye,False],[False,rear], col)
         elif lear and reye:#head circle if left ear is present + faceline
             lx = lear[0]
             reyex = reye[0] 
@@ -149,7 +177,7 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             #cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*k4), col, thickness=-limblen, lineType=8, shift=0)
             cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.73))  ,-angle+20,0,360,col,-1)
             #cv2.ellipse(npimg,(hx,hy2),(int(abs(nose[0]-lx)*k4*0.85),int(abs(nose[0]-lx)*k4*0.65))  ,20,0,360,col,-1)
-            eye_jaw(npimg,reye,lear, col)
+            eye_jaw(npimg,[False,reye],[lear,False], col)
 
     
     return npimg
