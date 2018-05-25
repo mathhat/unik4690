@@ -108,15 +108,7 @@ def eye_jaw(img, eyes, ears, col):
                                 right_corner,
                                 leye]],dtype=np.int_)
         cv2.fillPoly(img, vertices, col)
-        
-    #Check not outside image: 
-    #if bottom_[0] > img[0][-1]: 
-    #    eye_down[0] = img[0][-1]
-    #elif ear_down[0] > img[0][-1]: 
-    #    ear_down[0] = img[0][-1]
-  
 
-    #cv2.fillPoly(img, vertices, col)
     return img
 def draw_head(npimg,Centers,col,bol,k=[0]):
     tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
@@ -152,10 +144,10 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
             hy =  int((rear[1]+lear[1])/2)#-dx/k2) #nope  #fight me
             hy2 = hy - int(dx / 2.5)
             #limblen= int(dx/4)+1
-            l =8.*dx/(abs(nose[1]-neck[1])+1)
+            #l =8.*dx/(abs(nose[1]-neck[1])+1)
             #cv2.circle(npimg, (hx,hy), int(abs(dx*k1)), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5+l)) ,angle,0,360,col,-1)
-            cv2.ellipse(npimg,(hx+int(angle),hy2),(int(dx*k1/1.2),int(dx*k1/1.3))  ,angle,180,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5)) ,angle,180,360,col,-1)
+            cv2.ellipse(npimg,(hx+int(angle),hy2),(int(dx*k1/1.2),int(dx*k1/1.3))  ,angle,0,360,col,-1)
             # Addition; jawline from helper funct. 
             eye_jaw(npimg, [leye,reye], [False,False], col)
         #head pointing left (left eye hidden)
@@ -283,6 +275,7 @@ def draw_torso(npimg,Centers,col):
     neck = tryvar(1)
     minus = -1
     angle = 0
+    groin = []
 
     if lshould and rshould and neck:
         dx = (lshould[0] - rshould[0])
@@ -290,15 +283,24 @@ def draw_torso(npimg,Centers,col):
         d  = int(np.sqrt(dx*dx+dy*dy))
         if dx and dy:
             angle = np.arctan(dy*1./dx)*180/np.pi
-        cv2.ellipse(npimg,(neck[0],(lshould[1]+rshould[1])/2),(d/2,int(d*1.5)),angle,0,180,col,-20)
-        
+        cv2.ellipse(npimg,(neck[0],(lshould[1]+rshould[1])/2),(d/2,int(d*1.4)),angle,0,180,col,-20)
+        cv2.ellipse(npimg,(neck[0]-dy,(lshould[1]+rshould[1])/2+int(d*1.4)),(d/2,int(d*1.5)),angle,180,360,col,-20)
+
+        groin.append([lshould[0]-int(dy*1.5),lshould[1]+int(dx*1.5)])
+        groin.append([groin[0][0]-dx,groin[0][1]-dy])
+        groin.append([groin[0][0]-dy,groin[0][1]+dx])
+        groin.append([groin[1][0]-dy,groin[1][1]+dx])
+
+        cv2.line(npimg,(groin[0][0],groin[0][1]) ,(groin[1][0],groin[1][1]),[0,255,255],d/6)
+        cv2.line(npimg,(groin[2][0],groin[2][1]) ,(groin[3][0],groin[3][1]),[0,255,255],d/6)
+
+
         torso.append([lshould[0],lshould[1]])
         torso.append([rshould[0],rshould[1]])
-        #torso.append([neck[0]-dy,neck[1]+int(dx*1.5)]) #normal
         torso.append([neck[0]+dy/2,neck[1]-int(dx*0.35)])
         torso = np.asarray(torso)
         torso = torso.reshape((-1,1,2),)
-        #npimg = cv2.fillPoly(npimg,[torso],col)
+
         cv2.fillPoly(npimg,[torso],col)
         cv2.line(npimg,(rshould[0]-dy/15,rshould[1]+dx/15),(lshould[0]-dy/15,lshould[1]+dx/15),col,d/6)
         return npimg
@@ -317,17 +319,16 @@ def draw_torso(npimg,Centers,col):
     if dx and dy:
         angle = np.arctan(dy*1./dx)*180/np.pi
     cv2.ellipse(npimg,(neck[0],neck[1]),(d/2,int(d*1.5)),angle,0,180,col,-1)
-    #cv2.ellipse(npimg,(should[0] - dx/2,should[1] + dy/2),(d/2,int(d*1.5)),angle,0,180,col,-1)
-    
+    cv2.ellipse(npimg,(neck[0]-dy,neck[1]+int(d*1.5)),(d/2,int(d*1.5)),angle,180,360,col,-1)
+
+
 
     torso.append([should[0],should[1]])
     torso.append([should[0]-dx,should[1]-dy])
-    #torso.append([neck[0]-dy*minus,neck[1]+int(dx*1.5)*minus]) #normal
     torso.append([neck[0]+dy/2*minus,neck[1]-int(dx*0.35)*minus])
     
     torso = np.asarray(torso)
     torso = torso.reshape((-1,1,2),)   
-    #npimg = cv2.fillPoly(npimg,[torso],col)
     cv2.fillPoly(npimg,[torso],col)
     cv2.line(npimg,(should[0],should[1]),(should[0]-dx,should[1]-dy),col,d/7)
 
