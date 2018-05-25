@@ -43,7 +43,7 @@ if __name__ == '__main__':
         image2_tmp = draw_humans(image.copy(), humans,1)
         if np.any(image2_tmp > 0):
             image2=image2_tmp
-        image3 = Laplacian_blend(image/255., back/255.,image2/255.)
+        image3 = Laplacian_blend(image/255., back/255.,image2/255.,6)
 
         cv2.putText(image3,
                     "FPS: %f" % (1.0 / (time.time() - fps_time)),
@@ -51,7 +51,8 @@ if __name__ == '__main__':
                     (0, 0, 255), 2)
         mex = images.cpp_normalize(image3)
         image3/=mex 
-        image3*=255
+        image*=255
+        
         cv2.imshow('tf-pose-estimation result',image2)
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
