@@ -286,13 +286,19 @@ def draw_torso(npimg,Centers,col):
         cv2.ellipse(npimg,(neck[0],(lshould[1]+rshould[1])/2),(d/2,int(d*1.4)),angle,0,180,col,-20)
         cv2.ellipse(npimg,(neck[0]-dy,(lshould[1]+rshould[1])/2+int(d*1.4)),(d/2,int(d*1.5)),angle,180,360,col,-20)
 
-        groin.append([lshould[0]-int(dy*1.5),lshould[1]+int(dx*1.5)])
+        groin.append([lshould[0]-int(dy*1.4),lshould[1]+int(dx*1.4)])
         groin.append([groin[0][0]-dx,groin[0][1]-dy])
-        groin.append([groin[0][0]-dy,groin[0][1]+dx])
         groin.append([groin[1][0]-dy,groin[1][1]+dx])
+        groin.append([(groin[2][0]+groin[0][0]-dy)/2,(groin[0][1]+dx+ groin[0][1])/2])
+        groin.append([groin[0][0]-dy,groin[0][1]+dx])
+        
+        groin = np.asarray(groin)
+        groin = groin.reshape((-1,1,2),)
+        cv2.fillPoly(npimg,[groin],col)
 
-        cv2.line(npimg,(groin[0][0],groin[0][1]) ,(groin[1][0],groin[1][1]),[0,255,255],d/6)
-        cv2.line(npimg,(groin[2][0],groin[2][1]) ,(groin[3][0],groin[3][1]),[0,255,255],d/6)
+
+        #cv2.line(npimg,(groin[0][0],groin[0][1]) ,(groin[1][0],groin[1][1]),[0,255,255],d/6)
+        #cv2.line(npimg,(groin[2][0],groin[2][1]) ,(groin[3][0],groin[3][1]),[0,255,255],d/6)
 
 
         torso.append([lshould[0],lshould[1]])
