@@ -189,10 +189,10 @@ def draw_head(npimg,Centers,col,bol,k=[0]):
 def draw_hands(npimg,Centers,col):
     tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
     lw = tryvar(7)
-    rbow = tryvar(6)
+    lbow = tryvar(6)
     rw = tryvar(4)
     rbow = tryvar(3)
-
+    angle = 0
     if rw and rbow:
         x1 = rbow[0]
         x2 = rw[0]
@@ -200,16 +200,20 @@ def draw_hands(npimg,Centers,col):
         y2 = rw[1]
         dx = x2-x1
         dy = y2-y1 
-        angle = 0
         if dy*dx:
             tan = float(dx)/dy
-            angle = np.arctan(tan)*180/np.pi
-
+            angle = -np.arctan(tan)*180/np.pi
+            if dy<0:
+                angle += 180
+        elif dx:
+            angle = 90
+        elif dy<0:
+            angle = 180
+        else:
+            angle = 0
         d = int(np.sqrt((dy)**2+(dx)**2))
-
-        cv2.line(npimg, (x1,y1), (x2,y2), col, d/2)
-        cv2.ellipse(npimg,(x2,y2),d,d/2,angle,180,360,col,-1)
-
+        cv2.line(npimg, (x1,y1), (x2,y2), col, d/3)
+        cv2.ellipse(npimg,(x2,y2),(d/4,int(d*0.8)),angle,0,180,col,-1)
     if lw and lbow:
         x1 = lbow[0]
         x2 = lw[0]
@@ -217,15 +221,20 @@ def draw_hands(npimg,Centers,col):
         y2 = lw[1]
         dx = x2-x1
         dy = y2-y1 
-        angle = 0
         if dy*dx:
             tan = float(dx)/dy
-            angle = np.arctan(tan)*180/np.pi
-
+            angle = -np.arctan(tan)*180/np.pi
+            if dy<0:
+                angle += 180
+        elif dx:
+            angle = -90
+        elif dy<0:
+            angle = 180
+        else:
+            angle = 0
         d = int(np.sqrt((dy)**2+(dx)**2))
-
-        cv2.line(npimg, (x1,y1), (x2,y2), col, d/2)
-        cv2.ellipse(npimg,(x2,y2),d,d/2,angle,180,360,col,-1)
+        cv2.line(npimg, (x1,y1), (x2,y2), col, d/3)
+        cv2.ellipse(npimg,(x2,y2),(d/4,int(d*0.8)),angle,0,180,col,-1)
 
     return npimg
 
@@ -239,7 +248,7 @@ def draw_limbs(npimg,Centers,col,parts):
         y0 = Centers[pair[0]][1]
         y1 = Centers[pair[1]][1]
         
-        d = int(np.sqrt((y1-y0)**2+(x1-x0)**2)/2.7)
+        d = int(np.sqrt((y1-y0)**2+(x1-x0)**2)/3)
 
         cv2.line(npimg, (x0,y0), (x1,y1), col, d)
     return npimg
@@ -277,10 +286,8 @@ def draw_torso(npimg,Centers,col):
     elif neck and lshould:
         should = lshould 
         minus = 1
-        print "feck"
     elif neck and rshould:
         should = rshould
-        print "feck"
     else:
         return npimg
     #this code runs if only one shoulder is observed
@@ -322,9 +329,10 @@ def draw_humans(npimg, humans,bol=1,k=[0]): #main function
             center = (int(body_part.x * image_w + 0.5), int(body_part.y * image_h + 0.5))
             Centers[i] = center
 
-            cv2.circle(npimg, center, 3, common.CocoColors[i], thickness=7, lineType=8, shift=0)
+            #cv2.circle(npimg, center, 3, common.CocoColors[i], thickness=7, lineType=8, shift=0)
 
         draw_head(npimg,Centers,col,bol,k) #draws head (with internal jaw-line)
         draw_limbs(npimg,Centers,col,parts) #draws arms and legs
         draw_torso(npimg,Centers,col) #sigh
+        draw_hands(npimg,Centers,col)
     return npimg
