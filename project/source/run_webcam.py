@@ -17,7 +17,7 @@ import cv2
 import numpy as np
 
 from estimator import TfPoseEstimator
-from draw2 import draw_humans
+from draw3 import draw_humans
 from networks import get_graph_path, model_wh
 
 fps_time = 0
@@ -53,14 +53,14 @@ if __name__ == '__main__':
             image2=image2_tmp
 
         #blend background
-        image3 = Laplacian_blend(image/255., back/255.,image2/255.)
+        #image3 = Laplacian_blend(image/255., back/255.,image2/255.)
 
         #cv2.putText(image3,
         #            "FPS: %f" % (1.0 / (time.time() - fps_time)),
         #            (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
         #            (0, 0, 255), 2)
         #print edges
-        cv2.imshow('tf-pose-estimation result',image3)
+        cv2.imshow('tf-pose-estimation result',image2)
         
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
