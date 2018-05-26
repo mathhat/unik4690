@@ -92,24 +92,24 @@ def eye_jaw(img, eyes, ears, col):
         #     ------> (vector dir)
         dx = (leye[0] - reye[0])
         dy = (leye[1] - reye[1])
-        factor = 0.707/2
+        factor = 0.707
         bottom_left = ((reye[0] - 2*dy), 
                        (reye[1] + 2*dx))
         bottom_right = ((leye[0] - 2*dy), #note, rotation is here opposite. 
                         (leye[1] + 2*dx)) 
         left_corner = (reye[0] - factor*(dx + dy) , 
-                       reye[1] + factor*(dx - dy))
+                       reye[1] + factor*(dx - dy)) 
         right_corner = (leye[0] + factor*(dx - dy) , 
                         leye[1] + factor*(dx + dy))
-        vertices = np.asarray([[(reye[0] - .5*dx,
+        vertices = np.asarray([[(reye[0] - .3*dx,
                                 reye[1]),
                                 left_corner,
                                 bottom_left,
                                 bottom_right,
                                 right_corner,
-                                (leye[0] + .5*dx, 
+                                (leye[0] + .3*dx, 
                                  leye[1])]],dtype=np.int_)
-        cv2.fillConvexPoly(img, vertices, col)
+        cv2.fillPoly(img, vertices, col)
 
     return img
 def draw_head(npimg,Centers,col,bol,k=[0]):
