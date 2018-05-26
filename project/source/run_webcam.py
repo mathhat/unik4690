@@ -40,6 +40,14 @@ if __name__ == '__main__':
     humans = e.inference(image)
     image2 = draw_humans(image.copy(), humans,1)
     kernel = np.ones((6,6))
+
+    #bruk disse til å endre på Canny sine toleranser
+    #vi bruker nemlig canny til å definere conturene som vi så bruker fillconvexpoly på
+    '''
+    tol1 - thresh for hvor lett punkter lar seg sammenkobles i canny, (lav verdi = lange streker, sett mellom 50 og 300) 
+    tol2 - thresh for hvor lett punkter lar seg tegnes til å begynne med, (lav verdi = mye støy, sett mellom 100 og 300) 
+    '''
+
     while True:
         #back = cam2.read()[-1]
 
