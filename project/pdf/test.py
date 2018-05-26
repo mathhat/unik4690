@@ -10,6 +10,7 @@ content = r'' #creating initial content,
 #------------content below--------------# 
 content += r''' 
 
+
 %\section*{Mulige kilder til segmentering:} 
 %\url{https://www.cs.cmu.edu/~hebert/boundaries.htm}
 \abstract{}
@@ -18,11 +19,11 @@ Green Screens, are used in movies, series, news, video-games and home-made video
 approximately monochrome and plain background (often green) to be placed behind whatever is wanted in the foreground (often a person). When the green screen is placed, 
 a technique called Chroma Keying is applied in order to map where the plain green surface is. When the location of the green pixels are knows, a CGI, Computer Generated 
 Image, is mapped onto these pixels, making it seem like the person is standing in front of whatever is put in the back.
-
-Our algorithm provides a Green Screen tool, without having to place a Green Screen inside the scene.
-Our course has thought us complex, color based segmentation methods, but as people's backgrounds vary, colour based segmentation is not an option.
-
-
+\\
+\\
+Our algorithm provides a Green Screen tool for people, without having to place a Green Screen behind them. Our algorithm requires only 1 camera and has no dependence on color segmentation.
+Even though Computer Vision has taught us powerful, color based segmentation methods, they rely on plain backgrounds. Colour based segmentation is therefore not in our interest, as we seek to create something more flexible.
+Instead of using gaussian classification on the local colorspace to extract people from the image, we propose a method relying on feature detection, contouring and laplacian blurring, as an alternative.
 '''  
 
 
