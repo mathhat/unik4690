@@ -36,10 +36,10 @@ if __name__ == '__main__':
     ret_val, image = cam1.read()
     back  = common.read_imgfile(args.back,None,None)
     back = resize(back,(h,w),1)
-    #tol1,tol2,tol = read.Tol()
+    tol1,tol2,tol = read.Tol()
     humans = e.inference(image)
     image2 = draw_humans(image.copy(), humans,1)
-
+    kernel = np.ones((6,6))
     while True:
         #back = cam2.read()[-1]
 
@@ -59,8 +59,25 @@ if __name__ == '__main__':
                     "FPS: %f" % (1.0 / (time.time() - fps_time)),
                     (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     (0, 0, 255), 2)
+        imagee = cv2.cvtColor(image2,cv2.COLOR_BGR2GRAY)/255.
+        imagee = cv2.GaussianBlur(imagee,(41,41),40)
+        #imagee = cv2.GaussianBlur(imagee,(21,21),20)
+        edges = cv2.Canny(image,tol1,tol2)
+        contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[1:]
+        edges = cv2.fillConvexPoly(edges,np.asarray(contours),[0,0,255],8)
         
-        cv2.imshow('tf-pose-estimation result',image3)
+        
+        #edges = cv2.dilate(edges,kernel)
+        #edges = cv2.dilate(edges,kernel)
+        #mask = np.zeros((h+2, w+2), np.uint8)
+        #Floodfill from point (0, 0)
+        #cv2.floodFill(edges, mask, (h/2,w/2), 255)
+ 
+        
+        #k = cv2.matchShapes(imagee,edges,1,0.0)
+        edges = np.multiply(imagee,edges)
+        #print edges
+        cv2.imshow('tf-pose-estimation result',edges)
         
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
