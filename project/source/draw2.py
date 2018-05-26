@@ -342,7 +342,7 @@ def draw_torso(npimg,Centers,col):
 
     return npimg
 
-def draw_humans(npimg, humans,bol=1,k=[0]): #main function
+def draw_humans_original(npimg, humans,bol=1,k=[0]): #main function
     npimg *=0
     image_h, image_w = npimg.shape[:2]
     col = [255,255,255]

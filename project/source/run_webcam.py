@@ -17,7 +17,8 @@ import cv2
 import numpy as np
 
 from estimator import TfPoseEstimator
-from draw3 import draw_humans
+from draw3 import draw_humans          #gives gradient image
+from draw2 import draw_humans_original #gives slim dummy
 from networks import get_graph_path, model_wh
 
 fps_time = 0
@@ -54,7 +55,8 @@ if __name__ == '__main__':
         #run neural network that finds humans, then draw humans
         ret_val, image = cam1.read()
         humans = e.inference(image)
-        image2_tmp = draw_humans(image.copy(), humans,1)
+        image2_tmp = draw_humans(image.copy(), humans,1,tol1,tol2) #here's the grad/poly image
+        image3 = draw_humans_original(image.copy(), humans,1) #here our dummy
     
         #freeze dummy if no human is spotted
         if np.any(image2_tmp > 0):
@@ -70,7 +72,8 @@ if __name__ == '__main__':
         #image2 = cv2.dilate(image2,kernel) #If you wanna try to fill the gaps, I've played with the idea here
         #image2 = cv2.dilate(image2,kernel)
         #image2 = cv2.dilate(image2,kernel)
-        cv2.imshow('tf-pose-estimation result',image2)
+        cv2.imshow('tf-pose-estimation result',image2) #polydraw
+        cv2.imshow('tf-pose-estimation result2',image3) #dummy
         
         fps_time = time.time()
         if cv2.waitKey(1) == 27:

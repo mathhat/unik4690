@@ -366,7 +366,7 @@ def draw_torso(npimg,imgog,Centers,col):
 
     return npimg
 
-def draw_humans(img, humans,bol=1,k=[0]): #main function
+def draw_humans(img, humans,bol=1,tol1=150,tol2=100,k=[0]): #main function
 
     imgog = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
     image_h, image_w = img.shape[:2]
