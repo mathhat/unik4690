@@ -55,29 +55,12 @@ if __name__ == '__main__':
         #blend background
         image3 = Laplacian_blend(image/255., back/255.,image2/255.)
 
-        cv2.putText(image3,
-                    "FPS: %f" % (1.0 / (time.time() - fps_time)),
-                    (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                    (0, 0, 255), 2)
-        imagee = cv2.cvtColor(image2,cv2.COLOR_BGR2GRAY)/255.
-        imagee = cv2.GaussianBlur(imagee,(41,41),40)
-        #imagee = cv2.GaussianBlur(imagee,(21,21),20)
-        edges = cv2.Canny(image,tol1,tol2)
-        contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[1:]
-        edges = cv2.fillConvexPoly(edges,np.asarray(contours),[0,0,255],8)
-        
-        
-        #edges = cv2.dilate(edges,kernel)
-        #edges = cv2.dilate(edges,kernel)
-        #mask = np.zeros((h+2, w+2), np.uint8)
-        #Floodfill from point (0, 0)
-        #cv2.floodFill(edges, mask, (h/2,w/2), 255)
- 
-        
-        #k = cv2.matchShapes(imagee,edges,1,0.0)
-        edges = np.multiply(imagee,edges)
+        #cv2.putText(image3,
+        #            "FPS: %f" % (1.0 / (time.time() - fps_time)),
+        #            (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+        #            (0, 0, 255), 2)
         #print edges
-        cv2.imshow('tf-pose-estimation result',edges)
+        cv2.imshow('tf-pose-estimation result',image3)
         
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
