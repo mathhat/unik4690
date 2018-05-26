@@ -25,6 +25,39 @@ Our course has thought us complex, color based segmentation methods, but as peop
 
 '''  
 
+"""
+Skissert fremgang: 
+1. Idé; 
+    Bruk OpenPose-biblioteker til å finne grunnpunkter i et 
+    menneske slik at man kan generere et konvekst hull omkring 
+    mennesket (omhyllings-flate.)
+    
+2. Ved å bruke Pose til å estimere hvor leddene på et menneske 
+    er kan man danne en tilnærmet omhylling ved å bruke geometriske 
+    former, slik som pyramider, kuler, kuber, osv. 
+    (ikke ulikt en lego-figur, eller en skulptur.)
+    
+3. Til sist antar man at disse figurene og formene danner et sett, hvor 
+    hele mennesket er inneholdt innenfor grensene til figurene. 
+    (Matematisk sett er da mennesket en del av det konvekse settet med 
+     punkter inneholdt i det samlede settet av 3D former. På samme 
+     måte som alle luftpartiklene inne i en ball er en del av luften inne i 
+     ballen.) 
+     
+4. Dette kan man videre bruke til segmentering av 3 dimensjoner, hvor 
+    enhver vinkel kan dekkes gjennom en tenkt projeksjon av den fullførte 
+    figuren inn i bildeflaten. (Dermed former dette også en potensiell 
+    bestanddel for "minne" eller "forestillingsevne" til et kapselnettverk.)
+
+Over til faktisk utførelse: 
+1. Implementering av OpenPose. 
+
+2. Forsøk i metoder for å separere mennesket ved hjelp av 
+
+"""
+
+
+
 
 #------useful functions & such----------#
 # Allowing for Python Code

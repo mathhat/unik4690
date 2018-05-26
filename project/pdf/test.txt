@@ -22,7 +22,7 @@
 \begin{document}
 \title{UNIK 4690 Computer Vision Project\\ The Magic Greenscreen}
 \author{Joseph Knutson \& Jacob Alexander Hay}
-\date{2018-05-16}
+\date{2018-05-25}
 \maketitle
 
  
@@ -39,6 +39,9 @@ Image, is mapped onto these pixels, making it seem like the person is standing i
 Our algorithm provides a Green Screen tool, without having to place a Green Screen inside the scene.
 Our course has thought us complex, color based segmentation methods, but as people's backgrounds vary, colour based segmentation is not an option.
 
-
+% Skissert gang i prosj: 
+% 1. første ide; bruk pose for å generere et konvekst hull for en hel person 
+%    i 3D. 
+% 2. 
 
 \end{document}
