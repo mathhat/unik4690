@@ -60,7 +60,7 @@ if __name__ == '__main__':
                     (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     (0, 0, 255), 2)
         
-        cv2.imshow('tf-pose-estimation result',image2)
+        cv2.imshow('tf-pose-estimation result',image3)
         
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
