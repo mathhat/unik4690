@@ -159,8 +159,8 @@ def draw_head(npimg,imgog,Centers,col,bol,k=[0]):
             #limblen= int(dx/4)+1
             #l =8.*dx/(abs(nose[1]-neck[1])+1)
             #cv2.circle(npimg, (hx,hy), int(abs(dx*k1)), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5)) ,angle,180,360,col,-1)
-            cv2.ellipse(npimg,(hx+int(angle),hy2),(int(dx*k1/1.2),int(dx*k1/1.3))  ,angle,0,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.1),int(dx*k1*1.3)) ,angle,180,360,col,-1)
+            cv2.ellipse(npimg,(hx+int(angle),hy2),(int(dx*k1/1.),int(dx*k1/1.1))  ,angle,0,360,col,-1)
             # Addition; jawline from helper funct. 
             eye_jaw(npimg, [leye,reye], [False,False], col)
         #head pointing left (left eye hidden)
@@ -183,7 +183,7 @@ def draw_head(npimg,imgog,Centers,col,bol,k=[0]):
 
             #limblen = int((dx+abs(rx-leye[0])/2)*0.4)+1
             #cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*k4), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.73))  ,-angle-20,0,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.78),int(dx*k4*0.68))  ,-angle-20,0,360,col,-1)
             #cv2.ellipse(npimg,(hx,hy2),(int(abs(nose[0]-rx)*k4*0.85),int(abs(nose[0]-rx)*k4*0.65))  ,-20,0,360,col,-1)
             eye_jaw(npimg,[leye,reye],[False,rear], col)
         elif lear and reye:#head circle if left ear is present + faceline
@@ -201,7 +201,7 @@ def draw_head(npimg,imgog,Centers,col,bol,k=[0]):
             hy2 = hy - dx/10
             #limblen = int((abs(lx-reyex)/2+dx)*k5)
             #cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*k4), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.73))  ,-angle+20,0,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.78),int(dx*k4*0.68))  ,-angle+20,0,360,col,-1)
             #cv2.ellipse(npimg,(hx,hy2),(int(abs(nose[0]-lx)*k4*0.85),int(abs(nose[0]-lx)*k4*0.65))  ,20,0,360,col,-1)
             eye_jaw(npimg,[leye,reye],[lear,False], col)
 
@@ -239,7 +239,7 @@ def draw_hands(npimg,imgog,Centers,col):
         else:
             angle = 0
         d = int(np.sqrt((dy)**2+(dx)**2))
-        cv2.line(npimgt, (x1,y1), (x2,y2), col, d/3)
+        cv2.line(npimgt, (x1,y1), (x2,y2), col, int(d/2.4))
         cv2.ellipse(npimgt,(x2,y2),(d/4,int(d*0.8)),angle,0,180,col,-1)
         npimgt = np.uint8(np.multiply(imgog,npimgt/255.))
         npimgt = gradient(npimgt)
@@ -264,7 +264,7 @@ def draw_hands(npimg,imgog,Centers,col):
         else:
             angle = 0
         d = int(np.sqrt((dy)**2+(dx)**2))
-        cv2.line(r, (x1,y1), (x2,y2), col, d/3)
+        cv2.line(r, (x1,y1), (x2,y2), col, int(d/2.4))
         cv2.ellipse(r,(x2,y2),(d/4,int(d*0.8)),angle,0,180,col,-1)
         r = np.uint8(np.multiply(imgog,r/255.))
         r = gradient(r)
@@ -283,7 +283,7 @@ def draw_limbs(npimg,imgog,Centers,col,parts):
         y0 = Centers[pair[0]][1]
         y1 = Centers[pair[1]][1]
         
-        d = int(np.sqrt((y1-y0)**2+(x1-x0)**2)/3)
+        d = int(np.sqrt((y1-y0)**2+(x1-x0)**2)/2)
 
         cv2.line(npimgt, (x0,y0), (x1,y1), col, d)
         npimgt = np.uint8(np.multiply(imgog,npimgt/255.))
@@ -367,12 +367,16 @@ def draw_torso(npimg,imgog,Centers,col):
     return npimg
 
 def draw_humans(img, humans,bol=1,k=[0]): #main function
+
     imgog = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
-    npimg =imgog.copy()*0
-    image_h, image_w = npimg.shape[:2]
+    image_h, image_w = img.shape[:2]
     col = [255,255,255]
+    npimgtot = np.zeros_like(imgog)
+
     for human in humans:
         # draw point
+        npimg =np.zeros_like(imgog)
+
         Centers={}
         parts = human.body_parts.keys()
         for i in range(common.CocoPart.Background.value):
@@ -386,15 +390,20 @@ def draw_humans(img, humans,bol=1,k=[0]): #main function
             #cv2.circle(npimg, center, 3, common.CocoColors[i], thickness=7, lineType=8, shift=0)
         imgog = cv2.Canny(imgog,150,100)
         a=draw_head(npimg,imgog,Centers,col,bol,k) #draws head (with internal jaw-line)
-        a = np.uint8(np.multiply(imgog,a/255.))
-        a = gradient(a)        
-        npimg*=0
+        if np.any(a > 0):
+            a = cv2.dilate(a,np.ones((11,11)))
+            a = np.uint8(np.multiply(imgog,a/255.))
+            a = gradient(a)        
+            npimg*=0
         b=draw_limbs(npimg,imgog,Centers,col,parts) #draws arms and legs
+        
         c=draw_torso(npimg,imgog,Centers,col) #sigh
-        c = np.uint8(np.multiply(imgog,c/255.))
-        c = gradient(c)
+        if np.any(c > 0):
+            c = cv2.dilate(c,np.ones((11,11)))
+            c = np.uint8(np.multiply(imgog,c/255.))
+            c = gradient(c)
         npimg*=0
         d=draw_hands(npimg,imgog,Centers,col)
-        npimg = a+d+b+c+d
+        npimgtot += a+d+b+c+d
         
-    return npimg
+    return npimgtot

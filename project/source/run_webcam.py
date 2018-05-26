@@ -39,7 +39,7 @@ if __name__ == '__main__':
     tol1,tol2,tol = read.Tol()
     humans = e.inference(image)
     image2 = draw_humans(image.copy(), humans,1)
-    kernel = np.ones((6,6))
+    kernel = np.ones((7,7))
 
     #bruk disse til å endre på Canny sine toleranser
     #vi bruker nemlig canny til å definere conturene som vi så bruker fillconvexpoly på
@@ -59,7 +59,6 @@ if __name__ == '__main__':
         #freeze dummy if no human is spotted
         if np.any(image2_tmp > 0):
             image2=image2_tmp
-
         #blend background
         #image3 = Laplacian_blend(image/255., back/255.,image2/255.)
 
@@ -68,6 +67,9 @@ if __name__ == '__main__':
         #            (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
         #            (0, 0, 255), 2)
         #print edges
+        #image2 = cv2.dilate(image2,kernel) #If you wanna try to fill the gaps, I've played with the idea here
+        #image2 = cv2.dilate(image2,kernel)
+        #image2 = cv2.dilate(image2,kernel)
         cv2.imshow('tf-pose-estimation result',image2)
         
         fps_time = time.time()
