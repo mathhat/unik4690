@@ -55,7 +55,7 @@ if __name__ == '__main__':
         #run neural network that finds humans, then draw humans
         ret_val, image = cam1.read()
         humans = e.inference(image)
-        image2_tmp = draw_humans(image.copy(), humans,1,tol1,tol2) #here's the grad/poly image
+        image2_tmp = draw_humans(image.copy(), humans,1,tol1*10,tol2*10) #here's the grad/poly image
         image3 = draw_humans_original(image.copy(), humans,1) #here our dummy
     
         #freeze dummy if no human is spotted

@@ -9,9 +9,11 @@ def gradient(img):
     for i in contours:
         for j in i:
             shit.append([j[0][0],j[0][1]])
-    if len(shit) >1:
-        shit = np.asarray(shit)
-        img2 = cv2.fillConvexPoly(img,shit,[255,255,255],8)
+    if len(shit) >10:
+        shit = np.asarray(shit[::10])
+        img2 = cv2.fillConvexPoly(img,shit,[255,255,255],16)
+        #np.random.shuffle(shit) #shuffle
+        
         return img2
 
     else:
@@ -159,8 +161,8 @@ def draw_head(npimg,imgog,Centers,col,bol,k=[0]):
             #limblen= int(dx/4)+1
             #l =8.*dx/(abs(nose[1]-neck[1])+1)
             #cv2.circle(npimg, (hx,hy), int(abs(dx*k1)), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.1),int(dx*k1*1.3)) ,angle,180,360,col,-1)
-            cv2.ellipse(npimg,(hx+int(angle),hy2),(int(dx*k1/1.),int(dx*k1/1.1))  ,angle,0,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k1/1.3),int(dx*k1*1.5)) ,angle,180,360,col,-1)
+            cv2.ellipse(npimg,(hx+int(angle),hy2),(int(dx*k1/1.2),int(dx*k1/1.3))  ,angle,0,360,col,-1)
             # Addition; jawline from helper funct. 
             eye_jaw(npimg, [leye,reye], [False,False], col)
         #head pointing left (left eye hidden)
@@ -183,7 +185,7 @@ def draw_head(npimg,imgog,Centers,col,bol,k=[0]):
 
             #limblen = int((dx+abs(rx-leye[0])/2)*0.4)+1
             #cv2.circle(npimg, (hx,hy), int(abs(nose[0]-rx)*k4), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.78),int(dx*k4*0.68))  ,-angle-20,0,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.73))  ,-angle-20,0,360,col,-1)
             #cv2.ellipse(npimg,(hx,hy2),(int(abs(nose[0]-rx)*k4*0.85),int(abs(nose[0]-rx)*k4*0.65))  ,-20,0,360,col,-1)
             eye_jaw(npimg,[leye,reye],[False,rear], col)
         elif lear and reye:#head circle if left ear is present + faceline
@@ -201,7 +203,7 @@ def draw_head(npimg,imgog,Centers,col,bol,k=[0]):
             hy2 = hy - dx/10
             #limblen = int((abs(lx-reyex)/2+dx)*k5)
             #cv2.circle(npimg, (hx,hy), int(abs(nose[0]-lx)*k4), col, thickness=-limblen, lineType=8, shift=0)
-            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.78),int(dx*k4*0.68))  ,-angle+20,0,360,col,-1)
+            cv2.ellipse(npimg,(hx,hy),(int(dx*k4*0.85),int(dx*k4*0.73))  ,-angle+20,0,360,col,-1)
             #cv2.ellipse(npimg,(hx,hy2),(int(abs(nose[0]-lx)*k4*0.85),int(abs(nose[0]-lx)*k4*0.65))  ,20,0,360,col,-1)
             eye_jaw(npimg,[leye,reye],[lear,False], col)
 
@@ -239,7 +241,7 @@ def draw_hands(npimg,imgog,Centers,col):
         else:
             angle = 0
         d = int(np.sqrt((dy)**2+(dx)**2))
-        cv2.line(npimgt, (x1,y1), (x2,y2), col, int(d/2.4))
+        cv2.line(npimgt, (x1,y1), (x2,y2), col, d/3)
         cv2.ellipse(npimgt,(x2,y2),(d/4,int(d*0.8)),angle,0,180,col,-1)
         npimgt = np.uint8(np.multiply(imgog,npimgt/255.))
         npimgt = gradient(npimgt)
@@ -264,7 +266,7 @@ def draw_hands(npimg,imgog,Centers,col):
         else:
             angle = 0
         d = int(np.sqrt((dy)**2+(dx)**2))
-        cv2.line(r, (x1,y1), (x2,y2), col, int(d/2.4))
+        cv2.line(r, (x1,y1), (x2,y2), col, d/3)
         cv2.ellipse(r,(x2,y2),(d/4,int(d*0.8)),angle,0,180,col,-1)
         r = np.uint8(np.multiply(imgog,r/255.))
         r = gradient(r)
@@ -366,7 +368,7 @@ def draw_torso(npimg,imgog,Centers,col):
 
     return npimg
 
-def draw_humans(img, humans,bol=1,tol1=150,tol2=100,k=[0]): #main function
+def draw_humans(img, humans,bol=1,tol1=100,tol2=150,k=[0]): #main function
 
     imgog = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
     image_h, image_w = img.shape[:2]
