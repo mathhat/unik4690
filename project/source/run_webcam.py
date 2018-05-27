@@ -6,6 +6,7 @@ import sys
 import common
 from skimage import data, color
 from skimage.transform import rescale, resize, downscale_local_mean
+#NOTE: Sys.pathappend the location of tf-openpose/src/ or equivalent.
 sys.path.append("/home/joe/Documents/tf-pose-estimation/src/") 
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 #from gradient_estimator import human_canny 
