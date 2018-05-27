@@ -19,14 +19,14 @@ Object Detection is a field within Computer Vision with the purpose of detecting
 footballs to pedestrians. There are many methods for detecting the latter, but sadly, most of these methods care not to specify the position of 
 of a person with high precision. 
 Instead, some methods return rectangular patches where the person resides, while others return only a handful of key-points.
-
-
-This project aims to combine modern pose detection methods, like \cite{swag}, with image processing and feature detection methods like Laplacian Blending and Edge Detection 
-in order to not only detect people in images, but to better describe which pixels they inhabit. Once the human's pixels are extracted, they can be used for various things, like 3D reconstruction or
-transferring them to other images via image blending. The latter of which we have successfully implemented.
-
-
-The following chapters will discuss what tools we've used and roughly touch on the theory behind them. We'll clarify what we've borrowed from others. Which things we've implemented during our process, both that which works and that which did not.
+\\
+\\
+This project combines modern pose detection methods, like the one introduced by $Toshev \ et\ al\ (2014)$ \cite{swag}, with image processing and feature detection methods like Laplacian Blending and Edge Detection 
+in order to not only detect people in images, but to better describe which pixels they inhabit. 
+Once the human's pixels are extracted, we transfer them to other images via image blending. Like a green screen without a green screen.
+\\
+\\
+The following chapters will discuss what tools we've used and roughly touch on the theory behind them. We'll clarify what we've borrowed from others. Which things we've implemented during our process, both that which works and that which doesn't.
 And finally, we point out what we wish to improve and further implement.
 
 
@@ -51,7 +51,7 @@ The pose detection algorithm is the basis for our project, and as you can see, i
 \\
 \\
 \begin{figure}\centering
-\includegraphics[width=0.5\textwidth]{smile}
+\includegraphics[width=0.6\textwidth]{smile}
 \caption{Pose detection algorithm which finds key body-points.}
 \label{fig:pose1}
 \end{figure}
@@ -102,6 +102,44 @@ Not only do we use these pyramids for Laplace blending, we also use them for con
 \end{figure}
 
 \clearpage
+\section*{Tools and Programming Language} 
+\subsection*{Apparatus}
+Our code can run live on webcam, so as long as you have a webcam, no matter how low-res it is, you can run our code.
+If you want a decent fps, e.g. over 20 fps, you'll need a dedicated graphics card. 
+\subsection*{Source that is not Our}
+As previously stated, the DNN that finds key-points along the body is not written by us. It is however an important input for
+the code we've written ourselves.
+\subsection*{Python}
+Our project is written in Python 2.7. The libraries we're using are Numpy, Open CV2, Numba and Sci-Kit Learn.
+Numpy for matrix creation and matrix operations. Open CV is mainly used for edge detection, laplace blending, human modeling and morphological operations.
+Numba is for compiling Python code into C++ before it's run. This is mainly for image normalization. Sci-Kit had some useful image resize functions.
+
+\section*{The Process.:} 
+Along the long road towards a usable 2D segmentation we tried a few different 
+approaches. 
+
+First out was to use a Canny Edge detection algorithm and try to filter out which 
+edges were closest to any pose-points. After exhausting our paths that way, we 
+determined that it would be better to operate on just a portion of the image. 
+So we rewrote the algorithm to extract regions around points of interest, using 
+element-wise multiplication with Filters. 
+
+These Filters were geometric shapes, and we first tried to simply extract the portions 
+of the Canny image that were along the border of our picture. With the goal of 
+using this then with the convexHull-function in openCV. 
+
+Our next attempt brought in a bit more interesting twists, as we started playing around 
+with Laplacian Pyramids, and the concept of using the lower tiers of the Laplace Pyramid 
+as our edge-detector. (The concept is not unlike extracting Detail-Spaces using Wavelets)
+
+This turns out to maybe have some uses, but we are still then on a more or less 
+plain segmentation-implementation. 
+
+
+
+
+
+
 \section*{Idea Process, 2D/3D, and Library Independence:}
 
 In the beginning we had an idea to try to go into segmentation and explore methods to 
@@ -135,29 +173,6 @@ the information necessary.
 
 The concept should hold for any kind of object, be it a simple or complicated one 
 ideally. 
-
-\section*{The Process.:} 
-Along the long road towards a usable 2D segmentation we tried a few different 
-approaches. 
-
-First out was to use a Canny Edge detection algorithm and try to filter out which 
-edges were closest to any pose-points. After exhausting our paths that way, we 
-determined that it would be better to operate on just a portion of the image. 
-So we rewrote the algorithm to extract regions around points of interest, using 
-element-wise multiplication with Filters. 
-
-These Filters were geometric shapes, and we first tried to simply extract the portions 
-of the Canny image that were along the border of our picture. With the goal of 
-using this then with the convexHull-function in openCV. 
-
-Our next attempt brought in a bit more interesting twists, as we started playing around 
-with Laplacian Pyramids, and the concept of using the lower tiers of the Laplace Pyramid 
-as our edge-detector. (The concept is not unlike extracting Detail-Spaces using Wavelets)
-
-This turns out to maybe have some uses, but we are still then on a more or less 
-plain segmentation-implementation. 
-
-
 
 \begin{thebibliography}{9}
 \bibitem{swag} 
