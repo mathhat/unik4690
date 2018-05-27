@@ -10,7 +10,7 @@ from skimage.transform import rescale, resize, downscale_local_mean
 sys.path.append("/home/joe/Documents/tf-pose-estimation/src/") 
 sys.path.append("/home/user12/PROJECT2018/tf-openpose/src/")
 #from gradient_estimator import human_canny 
-from Laplace_Filter_Deprecated import Laplacian_blend, constructGaussian,constructLaplacian
+from Laplace_Filter import Laplacian_blend, constructGaussian,constructLaplacian
 import read
 import images
 
@@ -79,7 +79,7 @@ if __name__ == '__main__':
         #image2 = cv2.dilate(image2,kernel)
         cv2.imshow('tf-pose-estimation result',image2) #polydraw
         cv2.imshow('tf-pose-estimation result2',image3) #dummy
-        cv2.imshow('tf-pose-estimation result4',image4) #dummy
+        cv2.imshow('tf-pose-estimation result4',image4) #dummy based on low res gradient images
         
         fps_time = time.time()
         if cv2.waitKey(1) == 27:

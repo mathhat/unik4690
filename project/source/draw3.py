@@ -3,7 +3,7 @@ import common
 import cv2
 import numpy as np
 import read
-from Laplace_Filter_Deprecated import *
+from Laplace_Filter import *
 import itertools
 def gradient(img):
     """
