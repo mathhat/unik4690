@@ -161,7 +161,7 @@ Generating a semicircle or ellipse that covers the base structure of the back of
 angle from the eyes to cover noses or chinbones. 
 \item[Torso] The torso is drawn in as two opposing semi-ellipses, which can be thought of as a 
 slightly chubbied hour-glass. 
-\item[Arms & legs] These are in our model assumed to be approximately cylindrical. So we draw 
+\item[Arms \& legs] These are in our model assumed to be approximately cylindrical. So we draw 
 thick lines or squares that cover these, keeping with the theory that the 2D projection of a 
 cylinder, or cone-section (non parallel cylinder sides), will form a square-like shape.
 \item[Hands] Since our Pose-library doesn't feature hands, we decided to simply cover these by semicircles 
