@@ -18,24 +18,37 @@ content += r'''
 Object Detection, is a field within Computer Vision with the purpose of detecting objects of certain classes. These classes can range from
 footballs to pedestrians. When succefully detecting the latter, one usually ends up with is a rough or rectangular patch of the image.
 \\
+\\
 This project aims to combine modern pose detection methods, like \cite{swag}, with image processing and feature detection methods like Laplacian Blending and Edge Detection 
 in order to not only detect people in images, but to better describe which pixels they inhabit. Once the human's pixels are extracted, they can be used for various things, like 3D reconstruction or
-image blending. The latter of which we have successfully implemented.
+transferring them to other images via image blending. The latter of which we have successfully implemented.
 \\
 \\
-The following chapters will discuss what tools we've used. What we've borrowed from others. Which things we've implemented during our process, both that which works and that which did not.
-And finally, we point out what we want to improve and further implement.
+The following chapters will discuss what tools we've used and roughly touch on the theory behind them. We'll clarify what we've borrowed from others. Which things we've implemented during our process, both that which works and that which did not.
+And finally, we point out what we wish to improve and further implement.
 
-\section*{Background}
-Green Screens, are used in movies, series, news, video-games and home-made videos with the main reason of providing an artificial background. The technique requires an
-approximately monochrome and plain background (often green) to be placed behind whatever is wanted in the foreground (often a person). When the green screen is placed, 
-a technique called Chroma Keying is applied in order to map where the plain green surface is. When the location of the green pixels are knows, a CGI, Computer Generated 
-Image, is mapped onto these pixels, making it seem like the person is standing in front of whatever is put in the back.
-\\
-\\
-Our algorithm provides a Green Screen tool for people, without having to place a Green Screen behind them. Our algorithm requires only 1 camera and has no dependence on color segmentation.
-Even though Computer Vision has taught us powerful, color based segmentation methods, they rely on plain backgrounds. Colour based segmentation is therefore not in our interest, as we seek to create something more flexible.
-Instead of using gaussian classification on the local colorspace to extract people from the image, we propose a method relying on feature detection, contouring and laplacian blurring, as an alternative.
+%\section*{Background}
+%Green Screens, are used in movies, series, news, video-games and home-made videos with the main reason of providing an artificial background. The technique requires an
+%approximately monochrome and plain background (often green) to be placed behind whatever is wanted in the foreground (often a person). When the green screen is placed, 
+%a technique called Chroma Keying is applied in order to map where the plain green surface is. When the location of the green pixels are knows, a CGI, Computer Generated 
+%Image, is mapped onto these pixels, making it seem like the person is standing in front of whatever is put in the back.
+%\\
+%\\
+%Our algorithm provides a Green Screen tool for people, without having to place a Green Screen behind them. Our algorithm requires only 1 camera and has no dependence on color segmentation.
+%Even though Computer Vision has taught us powerful, color based segmentation methods, they rely on plain backgrounds. Colour based segmentation is therefore not in our interest, as we seek to create something more flexible.
+%Instead of using gaussian classification on the local colorspace to extract people from the image, we propose a method relying on feature detection, contouring and laplacian blurring, as an alternative.
+
+\section*{Theory}
+This chapter presents the methods we've used and the theory behind them.
+\subsection*{Pose Detection}
+Pose Detection is a computer vision technology which aims to detect key-points points, often on a person's body, in order to define
+that object's pose. Pose is in this case the translational information of the person in the image, its position in other words. In image 
+\ref{fig:pose1} you can observe the algorithm at work.
+
+\begin{figure}
+\includegraphics[width=\textwidth]{}
+\end{figure}
+
 
 \section*{Idea Process, 2D/3D, and Library Independence:}
 
