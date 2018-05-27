@@ -63,7 +63,7 @@ if __name__ == '__main__':
             image2=image2_tmp
         if len(image2.shape) < 3 : 
             image2 = cv2.cvtColor(image2,cv2.COLOR_GRAY2BGR)
-
+        
         #blend background
         image3 = Laplacian_blend(image/255., back,image2/255.)[0]
         #cv2.putText(image3,

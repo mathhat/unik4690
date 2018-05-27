@@ -13,11 +13,11 @@ content += r'''
 
 %\section*{Mulige kilder til segmentering:} 
 %\url{https://www.cs.cmu.edu/~hebert/boundaries.htm}
-\abstract{}
+\clearpage
 \section*{Introduction}
 Object Detection is a field within Computer Vision with the purpose of detecting objects of different classes. These classes of objects range from
 footballs to pedestrians. There are many methods for detecting the latter, but sadly, most of these methods care not to specify the position of 
-of a person with high precision. 
+a person in its entirety. 
 Instead, some methods return rectangular patches where the person resides, while others return only a handful of key-points.
 \\
 \\
@@ -67,7 +67,7 @@ as input an image of predefined size. The further convolution of this image can 
 \clearpage
 \subsection*{Edge Detection}
 Edges can be both basic yet informative features in images. A basic way of finding edges is to look for large changes in pixel values along the x and y axes.
-This is equivalent to finding the gradient, or derivative of the image. Mathematically, we can express the edge intensity in a pixel as the difference between its neighbouring pixels' values:
+This is equivalent to finding the gradient, or derivative of the image function. Mathematically, we can express the edge intensity in a pixel as the difference between its neighbouring pixels' values:
 \begin{equation}
 I_e(x,y) = |I(x-1,y) - I(x+1,y)| + |I(x,y-1) - I(x+1,y+1)|
 \end{equation}
@@ -114,65 +114,117 @@ Our project is written in Python 2.7. The libraries we're using are Numpy, Open 
 Numpy for matrix creation and matrix operations. Open CV is mainly used for edge detection, laplace blending, human modeling and morphological operations.
 Numba is for compiling Python code into C++ before it's run. This is mainly for image normalization. Sci-Kit had some useful image resize functions.
 
-\section*{The Process.:} 
+\section*{Process} 
 Along the long road towards a usable 2D segmentation we tried a few different 
 approaches. 
+\subsection*{Contours}
+Our initial attempt at capturing the pixels of a human in the image consisted of using the Canny Edge detection algorithm.
+This proved too difficult as a near perfect, closed curve around the individual was impossible to get. Our plan was to fill the contour once it became a closed curve, like MS paint's "fill" tool.
+Image \ref{contour} shows the promising contours that we managed to produce.
+\\
+\\
+\begin{figure}\centering
+\includegraphics[width=.7\textwidth]{jesus}
+\caption{The use of edges to create a closed curve proved difficult.}
+\label{contour}
+\end{figure}
+\subsection*{Convex Contours}
+Since the contours would'nt close themselves, we got the idea that we should try closing them by treating them as polygon vertices.
+Using cv2.fillconvexPoly(), we made a last ditch effort to make contours work, resulting in image \ref{contour2}. Not too pretty. 
+If our goal is to confine all the pixels of the person, this metod only covers half of them. Morphology didn't fix this.
 
-First out was to use a Canny Edge detection algorithm and try to filter out which 
-edges were closest to any pose-points. After exhausting our paths that way, we 
-determined that it would be better to operate on just a portion of the image. 
-So we rewrote the algorithm to extract regions around points of interest, using 
-element-wise multiplication with Filters. 
-
-These Filters were geometric shapes, and we first tried to simply extract the portions 
-of the Canny image that were along the border of our picture. With the goal of 
-using this then with the convexHull-function in openCV. 
-
-Our next attempt brought in a bit more interesting twists, as we started playing around 
-with Laplacian Pyramids, and the concept of using the lower tiers of the Laplace Pyramid 
-as our edge-detector. (The concept is not unlike extracting Detail-Spaces using Wavelets)
-
-This turns out to maybe have some uses, but we are still then on a more or less 
-plain segmentation-implementation. 
+\begin{figure}\centering
+\includegraphics[width=.7\textwidth]{stuff2}
+\caption{Open CV's FillConvexPoly algorithm was not fitting, but produced an interesting result on our open contour lines.}
+\label{contour2}
+\end{figure}
 
 
+\begin{figure}\centering
+\includegraphics[width=.7\textwidth]{dummy}
+\caption{Geometric shapes based on the pose detection DNN. We started making a dummy to represent the human. This made it easy to find edges local to the person.}
+\label{dummy}
+\end{figure}
+
+\subsection*{Body Estimation and Draw Functions}
+We started making a model of the human body, a dummy, while working on the contouring (see image \ref{dummy}) and kept using it for Laplacian Blending too!
+The dummy was a rough estimation of where the person's body was positioned, this helped us get rid of outside noise.
+By simply using a Hamarand product (a sort of dot product between matrices, but with no reduction afterwards),
+all edges outside of our dummy was annuled.
+\\
+\\
+We implement several different draw-functions for head, jawline, torso, 
+arms and legs. 
+\begin{itemize}
+\item[Head] This function finds keypoints; eyes, nose, ears, and neck. 
+Generating a semicircle or ellipse that covers the base structure of the back of the cranium. 
+\item[Jaw] This draws a set of vertices that form a square on bottom, and vertices at about 45 deg 
+angle from the eyes to cover noses or chinbones. 
+\item[Torso] The torso is drawn in as two opposing semi-ellipses, which can be thought of as a 
+slightly chubbied hour-glass. 
+\item[Arms \& legs] These are in our model assumed to be approximately cylindrical. So we draw 
+thick lines or squares that cover these, keeping with the theory that the 2D projection of a 
+cylinder, or cone-section (non parallel cylinder sides), will form a square-like shape.
+\item[Hands] Since our Pose-library doesn't feature hands, we decided to simply cover these by semicircles 
+that somewhat cover the range of motion that these are likely to be found in.
+\\
+\\  
+\end{itemize}
+
+We kept improving the dummy, because we knew we could use it along other image processing techniques. 
+Creating more limbs from lines, ellipses and quadrilaterals, using simple pose transformations based on the key-points returned by the DNN.
+By making it dynamically grow and shrink based on pixel distances of the DNN's keypoints, it now mimics the human form quite well. 
+As of now, the dummy looks like it does in image \ref{dummy2}. 
+
+\begin{figure}\centering
+\includegraphics[width=.6\textwidth]{swg}
+\caption{More geometric shapes mimicing the person's body based on the pose detection DNN. Silly as it looks, a lot of works went into creating this guy (or girl).}
+\label{dummy2}
+\end{figure}
+
+\subsection*{Laplace Blending}
+With a human dummy that roughly fits over the person in the image, Jacob proposed to simply laplace blend the person into another image, using the
+dummy as a ramp/mask. This gave some rather good results, but with a bit blurred out edges along the person (see figure \ref{1} and \ref{2}).
+
+\begin{figure}\centering
+\includegraphics[width=.5\textwidth]{1}
+\caption{Using the dummy as mask for Laplace Blending}
+\label{1}
+\end{figure}
+
+\begin{figure}\centering
+\includegraphics[width=.5\textwidth]{2}
+\caption{Laplace Blending of webcam stream and artificial background}
+\label{2}
+\end{figure}
 
 
 
 
-\section*{Idea Process, 2D/3D, and Library Independence:}
 
-In the beginning we had an idea to try to go into segmentation and explore methods to 
-possibly segment people in 3D. The concept there was to try to find the enveloping hull 
-that closest fit the human being in 3D, using only a single camera and known geometric 
-shapes that approximate the human form. 
+\section*{Evaluation and Future Ambitions}
 
-In order to do that we looked into using Pose-estimators such as OpenPose, and generating 
-Spheres, Cubes, etc. to envelop the person. 
-
-On further feedback, we were guided towards doing more image segmentation, and less of 
-the first concept to "scan" a human being into a 3D model. It was even suggested that 
-we would/could try to map the images as we captured them onto a 3D model. 
-
+Our Green Screen has the potential to become more precise by combining it with a successful method for finding a closed contour around the person.
+We were unable to implement a proper contour and ended instead up with a bulky Laplace Blending method for extracting the person's pixels instead.
+\\
+\\
+We want to improve this code further, so that it can extract people from an image and used their pose and pixel values to recreate a model of them in 3D.
+As we were given feedback, we were guided towards doing more image segmentation, and less of 
+our primary concept to "scan" a human being into a 3D model.  
 However, in order to do so, we would need to generate a 3D imaging tool which would allow 
 us to both segment, capture, create a mosaic, and use something like ORBSLAM to keep track 
 of the features and keypoints on this expansive surface that covers a human being. 
-
-Working on how to implement this, we decided therefore to first get the 2D elements correct. 
-That is; To do segmentation using geometric shapes (Triangles, Circles, Polygons, etc.) and 
-then, if time allowed us, to use these shapes as projected images of the 3D shapes of 
-pyramids, Spheres, etc. 
-
-Along the way we would then also need to be able to extract the portions of the image that 
-correlates to the overlap of these shapes and the camera feed. Which essentially turns it 
+\\
+\\
+Along the way we would then need to be able to extract the portions of the image that 
+correlates to the people in the image. Which essentially turns the program 
 into a green-screen (without the green). 
-
+\\
+\\
 Ideally we would have a code that can take any coupled set of Canonical shapes, and 
 a Pose-detection software, map the Shapes to the Pose, and from there be able to extract 
-the information necessary. 
+the information necessary to create 3D models of people. 
 
-The concept should hold for any kind of object, be it a simple or complicated one 
-ideally. 
 
 \begin{thebibliography}{9}
 \bibitem{swag} 

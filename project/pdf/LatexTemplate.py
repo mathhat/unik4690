@@ -105,9 +105,9 @@ class Template:
 
     def OldIntro(self):
         if self.landscape: 
-            Intro = r" \documentclass[landscape]{article} %landscape mode included"
+            Intro = r" \documentclass[landscape]{report} %landscape mode included"
         else: 
-            Intro = r"\documentclass{article} %landscape mode included"
+            Intro = r"\documentclass{report} %landscape mode included"
         Intro += r"""
 %Additions by joseph
 \usepackage{subcaption}
