@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from LatexTemplate import *
-Type = Template(Title = "UNIK 4690 Computer Vision Project\\\ The Magic Greenscreen", author="Joseph Knutson \& Jacob Alexander Hay") #<----- Header title
+Type = Template(Title = "UNIK 4690 Computer Vision Project\\\ Human Image Extraction", author="Joseph Knutson \& Jacob Alexander Hay") #<----- Header title
 #^additional vars: author(str), date(str), landscape(boolean) 
 #---create content as raw string below--# 
 #----------using LaTeX-format-----------#  
@@ -15,6 +15,18 @@ content += r'''
 %\url{https://www.cs.cmu.edu/~hebert/boundaries.htm}
 \abstract{}
 \section*{Introduction}
+Object Detection, is a field within Computer Vision with the purpose of detecting objects of certain classes. These classes can range from
+footballs to pedestrians. When succefully detecting the latter, one usually ends up with is a rough or rectangular patch of the image.
+\\
+This project aims to combine modern pose detection methods, like \cite{swag}, with image processing and feature detection methods like Laplacian Blending and Edge Detection 
+in order to not only detect people in images, but to better describe which pixels they inhabit. Once the human's pixels are extracted, they can be used for various things, like 3D reconstruction or
+image blending. The latter of which we have successfully implemented.
+\\
+\\
+The following chapters will discuss what tools we've used. What we've borrowed from others. Which things we've implemented during our process, both that which works and that which did not.
+And finally, we point out what we want to improve and further implement.
+
+\section*{Background}
 Green Screens, are used in movies, series, news, video-games and home-made videos with the main reason of providing an artificial background. The technique requires an
 approximately monochrome and plain background (often green) to be placed behind whatever is wanted in the foreground (often a person). When the green screen is placed, 
 a technique called Chroma Keying is applied in order to map where the plain green surface is. When the location of the green pixels are knows, a CGI, Computer Generated 
@@ -79,6 +91,17 @@ as our edge-detector. (The concept is not unlike extracting Detail-Spaces using 
 
 This turns out to maybe have some uses, but we are still then on a more or less 
 plain segmentation-implementation. 
+
+
+
+\begin{thebibliography}{9}
+\bibitem{swag} 
+Alexander Toshev, Christian Szegedy. \\
+\textit{DeepPose: Human Pose Estimation via Deep Neural Networks}. 2014.
+\\\texttt{http://openaccess.thecvf.com/content\_cvpr\_2014/papers/Toshev\_DeepPose\_Human\_Pose\_2014\_CVPR\_paper.pdf}
+
+
+\end{thebibliography}
 
 
 

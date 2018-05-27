@@ -8,7 +8,7 @@ import itertools
 def gradient(img):
     G = constructGaussian(img)
     L = constructLaplacian(G)
-    detail_img = L[2]
+    detail_img = L[1]
     huh, contours, hierarchy = cv2.findContours(detail_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     #shit = []    
     # Note: endrer på shitten her: bruker dilering og lukking av kurvene heller. 
@@ -431,7 +431,6 @@ def draw_humans(img, humans,bol=1,tol1=100,tol2=150,k=[0]): #main function
         #This is weird... 
         npimgtot += a+b+c+d
         #SMH; int64 vs uint8 error : Shoud use like: 
-        #npimgtot += np.where(a>0 ,1,0)
         #npimgtot += np.where(b>0, 1,0)
         #npimgtot += np.where(c>0, 1,0)
         #npimgtot += np.where(d>0, 1,0)

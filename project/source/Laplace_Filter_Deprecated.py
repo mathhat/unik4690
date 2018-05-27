@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 from skimage.transform import resize as skresize
 
-def constructGaussian(img, depth=6): 
+def constructGaussian(img, depth=2): 
     G = img.copy()
     GP = [G]
     for i in xrange(depth): 

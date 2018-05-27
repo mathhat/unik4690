@@ -55,15 +55,16 @@ if __name__ == '__main__':
         #run neural network that finds humans, then draw humans
         ret_val, image = cam1.read()
         humans = e.inference(image)
-        image2_tmp = draw_humans(image.copy(), humans,1,tol1,tol2) #here's the grad/poly image
-        image3 = draw_humans_original(image.copy(), humans,1) #here our dummy
-    
+        image4 = draw_humans(image.copy(), humans,1,tol1,tol2) #here's the grad/poly image
+        image2_tmp = draw_humans_original(image.copy(), humans,1) #here our dummy
+        
         #freeze dummy if no human is spotted
         if np.any(image2_tmp > 0):
             image2=image2_tmp
-        #blend background
-        #image3 = Laplacian_blend(image/255., back/255.,image2/255.)
+        #image2 = cv2.cvtColor(image2,cv2.COLOR_GRAY2BGR)
 
+        #blend background
+        image3 = Laplacian_blend(image/255., back,image2/255.)[0]
         #cv2.putText(image3,
         #            "FPS: %f" % (1.0 / (time.time() - fps_time)),
         #            (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,
@@ -76,6 +77,7 @@ if __name__ == '__main__':
         #image2 = cv2.dilate(image2,kernel)
         cv2.imshow('tf-pose-estimation result',image2) #polydraw
         cv2.imshow('tf-pose-estimation result2',image3) #dummy
+        cv2.imshow('tf-pose-estimation result4',image4) #dummy
         
         fps_time = time.time()
         if cv2.waitKey(1) == 27:
