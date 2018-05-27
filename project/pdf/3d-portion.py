@@ -97,6 +97,40 @@ and was for that reason not included in the current scope.)
 
 
 
+
+
+\section*{On Draw-functinos}
+We are implementing several different draw-functions for head, jawline, torso, 
+arms and legs. 
+\begin{itemize}
+\item[Head] This function finds keypoints; eyes, nose, ears, and neck. 
+Generating a semicircle or ellipse that covers the base structure of the back of the cranium. 
+\item[Jaw] This draws a set of vertices that form a square on bottom, and vertices at about 45 deg 
+angle from the eyes to cover noses or chinbones. 
+\item[Torso] The torso is drawn in as two opposing semi-ellipses, which can be thought of as a 
+slightly chubbied hour-glass. 
+\item[Arms & legs] These are in our model assumed to be approximately cylindrical. So we draw 
+thick lines or squares that cover these, keeping with the theory that the 2D projection of a 
+cylinder, or cone-section (non parallel cylinder sides), will form a square-like shape.
+\item[Hands] Since our Pose-library doesn't feature hands, we decided to simply cover these by semicircles 
+that somewhat cover the range of motion that these are likely to be found in.  
+\end{itemize}
+
+\subsection*{"gradient"-function:}
+There is also a somewhat peculiar version of a Laplacian manipulation in the top 
+section of the draw-file. What this one does is taking an edge-image and manipulate 
+it using the intermittent levels of the Laplace Pyramid. 
+
+Starting on the bottom, or a level above, it will dilate and erode, i.e. close, the particular 
+level of the Laplace Pyramid. It then adds in the information from the next level of the 
+Laplace before performing the PyrUp function. 
+
+The theory here is to use the various levels of the edge-image, in order to create something 
+comparable to the filter generated from our geometric-shapes dummy. 
+
+It seems to work reasonably well, 
+
+
 '''  
 
 

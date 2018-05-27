@@ -61,7 +61,8 @@ if __name__ == '__main__':
         #freeze dummy if no human is spotted
         if np.any(image2_tmp > 0):
             image2=image2_tmp
-        #image2 = cv2.cvtColor(image2,cv2.COLOR_GRAY2BGR)
+        if len(image2.shape) < 3 : 
+            image2 = cv2.cvtColor(image2,cv2.COLOR_GRAY2BGR)
 
         #blend background
         image3 = Laplacian_blend(image/255., back,image2/255.)[0]

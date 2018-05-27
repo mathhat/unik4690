@@ -6,9 +6,21 @@ import read
 from Laplace_Filter_Deprecated import *
 import itertools
 def gradient(img):
+    """
+    Current usage; on an image from a Canny-Edge filter we analyse the detail space 
+    (lower levels of the Laplace Pyramid of the image ), and attempt to 
+    combine a contour-drawing on the lower levels which then is pyrUpped.
+    (This should theoretically percolate upwards in the pyramid, though 
+     we haven't seen anyone else doing this explicitly.)
+    This functions now as a modified Laplacian, which dilates and erodes at 
+    every level (closes for each level of the pyramid to ensure a sort of smooth 
+    retention of lower level details,) before it adds the Laplacian elements from 
+    the next level. 
+    
+    """
     G = constructGaussian(img)
     L = constructLaplacian(G)
-    det_lev = 3
+    det_lev = 2
     detail_img = L[det_lev]
     huh, contours, hierarchy = cv2.findContours(detail_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     #shit = []    
@@ -16,13 +28,15 @@ def gradient(img):
     new_img = cv2.drawContours(detail_img, contours, -1, [255,255,255])
     #Dilate + Erode = Closing.  
     dilated = cv2.dilate(new_img, np.ones((4,4),dtype=np.uint8))
-    for _ in itertools.repeat(None,len(L)-(det_lev +1)):
+    for i in range(det_lev, len(L)-1):
         #concept: Could dilate and close on every level ? (try without.)
         dilated = cv2.dilate(dilated, np.ones((5,5),dtype=np.uint8))
         dilated = cv2.erode(dilated, np.ones((5,5),dtype=np.uint8))
+        dilated = cv2.add(dilated, L[i]) #Experimental feature, ignore.   
         dilated = cv2.pyrUp(dilated)
         
-    closed = cv2.morphologyEx(dilated, cv2.MORPH_CLOSE, np.ones((2,2),dtype=np.uint8))
+    dilated = cv2.dilate(dilated, np.ones((5,5),dtype=np.uint8))
+    closed = cv2.morphologyEx(dilated, cv2.MORPH_CLOSE, np.ones((5,5),dtype=np.uint8))
 
     #closed = cv2.pyrUp(closed)
 
@@ -129,7 +143,7 @@ def eye_jaw(img, eyes, ears, col):
         #     ------> (vector dir)
         dx = (leye[0] - reye[0])
         dy = (leye[1] - reye[1])
-        factor = 0.707
+        factor = 0.707/2.
         bottom_left = ((reye[0] - 2*dy), 
                        (reye[1] + 2*dx))
         bottom_right = ((leye[0] - 2*dy), #note, rotation is here opposite. 
@@ -431,7 +445,11 @@ def draw_humans(img, humans,bol=1,tol1=100,tol2=150,k=[0]): #main function
         npimg*=0
         d=draw_hands(npimg,imgog,Centers,col)
         #This is weird... 
-        npimgtot += a+b+c+d
+        #npimgtot += a+b+c+d
+        npimgtot = cv2.add(npimgtot, a)
+        npimgtot = cv2.add(npimgtot, b)
+        npimgtot = cv2.add(npimgtot, c)
+        npimgtot = cv2.add(npimgtot, d)
         #SMH; int64 vs uint8 error : Shoud use like: 
         #npimgtot += np.where(b>0, 1,0)
         #npimgtot += np.where(c>0, 1,0)
