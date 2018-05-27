@@ -26,76 +26,91 @@
 \maketitle
 
  
+\section*{The Geometric Motivation: }
+This is a short section/chapter covering the motivation to use 
+Geometric shapes for our segmentation, and some mathematically nice qualities 
+of these shapes. 
+\subsection*{Platonic Solids:}
+From the ancient times there has been a special place for what was known then 
+as Platonic solids. These were thought to be sacred shapes that described 
+something True, and for our intents and purposes that might as well be true.\\
 
+These shapes are indeed special, including but not limited to the cube, 
+the pyramid, and the dodocahedron.\\
 
-%\section*{Mulige kilder til segmentering:} 
-%\url{https://www.cs.cmu.edu/~hebert/boundaries.htm}
-\abstract{}
-\section*{Introduction}
-Green Screens, are used in movies, series, news, video-games and home-made videos with the main reason of providing an artificial background. The technique requires an
-approximately monochrome and plain background (often green) to be placed behind whatever is wanted in the foreground (often a person). When the green screen is placed, 
-a technique called Chroma Keying is applied in order to map where the plain green surface is. When the location of the green pixels are knows, a CGI, Computer Generated 
-Image, is mapped onto these pixels, making it seem like the person is standing in front of whatever is put in the back.
-\\
-\\
-Our algorithm provides a Green Screen tool for people, without having to place a Green Screen behind them. Our algorithm requires only 1 camera and has no dependence on color segmentation.
-Even though Computer Vision has taught us powerful, color based segmentation methods, they rely on plain backgrounds. Colour based segmentation is therefore not in our interest, as we seek to create something more flexible.
-Instead of using gaussian classification on the local colorspace to extract people from the image, we propose a method relying on feature detection, contouring and laplacian blurring, as an alternative.
+Essential qualities of these are that they are polygons, and therefore 
+also convex shapes. As a curiosity these were traditionally combined 
+into a single shape, called the Metatron's Cube. \\ 
+\subsection*{Convexity: }
+A set, C, is said to be convex if $\forall x,y \in C$ and $t \in [0,1]$ the 
+following is always true:
+\begin{equation}
+(1 - t)x + yt \in C
+\end{equation}
+This is trivially true, perhaps, for polygons, but it is essential 
+when considering our project. 
 
-\section*{Idea Process, 2D/3D, and Library Independence:}
+\subsection*{Projection of Convex Shapes:}
+Basic Assumption: 
+The projection of a 3D, Convex shape to a 2D image-surface will form a 
+2D Convex Shape. (This assumption is true, but will not be proven here)\\
 
-In the beginning we had an idea to try to go into segmentation and explore methods to 
-possibly segment people in 3D. The concept there was to try to find the enveloping hull 
-that closest fit the human being in 3D, using only a single camera and known geometric 
-shapes that approximate the human form. 
+Knowing that this is the case, the following preposition is an important 
+bit of logic for our project. \\
 
-In order to do that we looked into using Pose-estimators such as OpenPose, and generating 
-Spheres, Cubes, etc. to envelop the person. 
+\subsection*{Geometric assumptions, and our Project:}
+If we assume that a body is a combination of polygons, and other convex 
+shapes such as spheres, then from an image of a set of polygons we can infer a 3D shape. \\
 
-On further feedback, we were guided towards doing more image segmentation, and less of 
-the first concept to "scan" a human being into a 3D model. It was even suggested that 
-we would/could try to map the images as we captured them onto a 3D model. 
+We do this every day when we assume that, e.g. an apple has a 3D shape, even 
+though we can only see an image of it. 
 
-However, in order to do so, we would need to generate a 3D imaging tool which would allow 
-us to both segment, capture, create a mosaic, and use something like ORBSLAM to keep track 
-of the features and keypoints on this expansive surface that covers a human being. 
+When we look at a head, we will assume it has a spheroid upper portion, and a 
+jaw-structure which is similar to a bumpy semi-cylinder. \\
 
-Working on how to implement this, we decided therefore to first get the 2D elements correct. 
-That is; To do segmentation using geometric shapes (Triangles, Circles, Polygons, etc.) and 
-then, if time allowed us, to use these shapes as projected images of the 3D shapes of 
-pyramids, Spheres, etc. 
+The image we see is undeniably 2D, and yet we have an underlying assumption of the 
+shape based on knowing key-facts, and associating them with keypoints. 
 
-Along the way we would then also need to be able to extract the portions of the image that 
-correlates to the overlap of these shapes and the camera feed. Which essentially turns it 
-into a green-screen (without the green). 
+Conceptually then; it makes sense to endow the machine's vision with these same 
+suppositions. Essentially to couple keypoints with geometric shapes. 
+Using pose to extract rotation and keypoints then, we can theoretically form 
+a human being composed entirely of convex shapes, and as noted this can 
+be extended into assumptions as to the 3 dimensional shape of things. 
 
-Ideally we would have a code that can take any coupled set of Canonical shapes, and 
-a Pose-detection software, map the Shapes to the Pose, and from there be able to extract 
-the information necessary. 
+This is not unlike how people have created human figures in video-games. 
 
-The concept should hold for any kind of object, be it a simple or complicated one 
-ideally. 
+\subsection*{Vision and Segmentation Geometrically:}
+Vision in human beings is not an easy thing to emulate. Specifically 
+our vision seems to be filtered through visual centers, creatively named V1, V2, etc.. 
+What these visual centers seem to do is isolate qualities about the image you're perceiving. 
+\url{https://en.wikipedia.org/wiki/Visual_cortex}
 
-\section*{The Process.:} 
-Along the long road towards a usable 2D segmentation we tried a few different 
-approaches. 
+What we may call the secondary portion of vision relates to the projected expectations 
+we have. That is, if a face turns to the side, we expect the head to expand backwards relative to the face, 
+and we would be surprised if it did not. (See \url{https://en.wikipedia.org/wiki/Mental_rotation})
 
-First out was to use a Canny Edge detection algorithm and try to filter out which 
-edges were closest to any pose-points. After exhausting our paths that way, we 
-determined that it would be better to operate on just a portion of the image. 
-So we rewrote the algorithm to extract regions around points of interest, using 
-element-wise multiplication with Filters. 
+In terms of what is happening in our human vision, there are theories to support 
+we are operating on what's known as the Dorsal Stream. 
+(\url{https://en.wikipedia.org/wiki/Two-streams_hypothesis#Dorsal_stream})
 
-These Filters were geometric shapes, and we first tried to simply extract the portions 
-of the Canny image that were along the border of our picture. With the goal of 
-using this then with the convexHull-function in openCV. 
+In other words; in our human vision there are expected results from rotation of an object 
+that stem from our experience in a three dimensional world. Borrowing some of this 
+in an attempt to improve upon the machine vision, seems to us to make sense. 
 
-Our next attempt brought in a bit more interesting twists, as we started playing around 
-with Laplacian Pyramids, and the concept of using the lower tiers of the Laplace Pyramid 
-as our edge-detector. (The concept is not unlike extracting Detail-Spaces using Wavelets)
+This is part of what Hinton (et. al.) uses to create the theory of Capsule Networks. 
+(For more on CapsNet, we suggest this series of articles: \url{https://medium.com/ai%C2%B3-theory-practice-business/understanding-hintons-capsule-networks-part-i-intuition-b4b559d1159b})
 
-This turns out to maybe have some uses, but we are still then on a more or less 
-plain segmentation-implementation. 
+\subsection*{Our Concept:}
+For these reasons our algorithm was created to use geometric relations to generate a 
+collected set of 2D convex shapes that change and morph with respect to the pose.
+The shape of our segmentation is a collection of ellipses and polygons, which 
+with more time can be expanded to heuristically understand what possible 3D shapes 
+form these on an image-surface. 
+
+For the 3D underlying shapes one has to actually rotate the object, remembering the previous 
+rotations, keeping track of the object to ensure one does not "learn" the wrong things, and 
+from this infer the correct geometric shape(s). (This would require us to create a LSTM or something similar, 
+and was for that reason not included in the current scope.)
 
 
 

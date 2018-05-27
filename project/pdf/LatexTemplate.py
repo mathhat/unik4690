@@ -109,6 +109,41 @@ class Template:
         else: 
             Intro = r"\documentclass{article} %landscape mode included"
         Intro += r"""
+%Additions by joseph
+\usepackage{subcaption}
+\usepackage{parskip}
+\usepackage{color}
+\usepackage{listings}
+
+
+\definecolor{red}{rgb}{1,0,0}
+\definecolor{green}{rgb}{0,1,0}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{blue},
+    numberstyle=\tiny\color{codepurple},
+    stringstyle=\color{codegreen},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle,language = Python}
+
+
 \usepackage{geometry}
 \geometry{left=20mm,right=20mm,top=20mm,bottom=30mm}
 \usepackage{fancyvrb}   % for verbatim monospace computer code

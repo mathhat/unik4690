@@ -13,19 +13,19 @@ content3 += r'''
 This is a short section/chapter covering the motivation to use 
 Geometric shapes for our segmentation, and some mathematically nice qualities 
 of these shapes. 
-\subsection'{Platonic Solids:}
+\subsection*{Platonic Solids:}
 From the ancient times there has been a special place for what was known then 
 as Platonic solids. These were thought to be sacred shapes that described 
-something True, and for our intents and purposes that might as well be true. 
+something True, and for our intents and purposes that might as well be true.\\
 
 These shapes are indeed special, including but not limited to the cube, 
-the pyramid, and the dodocahedron.
+the pyramid, and the dodocahedron.\\
 
 Essential qualities of these are that they are polygons, and therefore 
 also convex shapes. As a curiosity these were traditionally combined 
-into a single shape, called the Metatron's Cube. 
+into a single shape, called the Metatron's Cube. \\ 
 \subsection*{Convexity: }
-A set, C, is said to be convex if $\forany x,y \in C$ and $t \in [0,1]$ the 
+A set, C, is said to be convex if $\forall x,y \in C$ and $t \in [0,1]$ the 
 following is always true:
 \begin{equation}
 (1 - t)x + yt \in C
@@ -36,20 +36,20 @@ when considering our project.
 \subsection*{Projection of Convex Shapes:}
 Basic Assumption: 
 The projection of a 3D, Convex shape to a 2D image-surface will form a 
-2D Convex Shape. (This assumption is true, but will not be proven here)
+2D Convex Shape. (This assumption is true, but will not be proven here)\\
 
 Knowing that this is the case, the following preposition is an important 
-bit of logic for our project. 
+bit of logic for our project. \\
 
 \subsection*{Geometric assumptions, and our Project:}
 If we assume that a body is a combination of polygons, and other convex 
-shapes such as spheres, then from an image of a set of polygons we can infer a 3D shape. 
+shapes such as spheres, then from an image of a set of polygons we can infer a 3D shape. \\
 
 We do this every day when we assume that, e.g. an apple has a 3D shape, even 
 though we can only see an image of it. 
 
 When we look at a head, we will assume it has a spheroid upper portion, and a 
-jaw-structure which is similar to a bumpy semi-cylinder. 
+jaw-structure which is similar to a bumpy semi-cylinder. \\
 
 The image we see is undeniably 2D, and yet we have an underlying assumption of the 
 shape based on knowing key-facts, and associating them with keypoints. 
@@ -158,7 +158,7 @@ and was for that reason not included in the current scope.)
 #--------------Typeset below:-------------------->#
 if __name__ == '__main__':
     try:
-        Type.content(content)       # may be irrelevant
+        Type.content(content3)       # may be irrelevant
         Type.Typeset('3d-portion',showpdf=False) # <-filename
     except: 
         pass

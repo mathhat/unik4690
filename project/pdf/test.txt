@@ -1,4 +1,39 @@
 \documentclass{article} %landscape mode included
+%Additions by joseph
+\usepackage{subcaption}
+\usepackage{parskip}
+\usepackage{color}
+\usepackage{listings}
+
+
+\definecolor{red}{rgb}{1,0,0}
+\definecolor{green}{rgb}{0,1,0}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{blue},
+    numberstyle=\tiny\color{codepurple},
+    stringstyle=\color{codegreen},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle,language = Python}
+
+
 \usepackage{geometry}
 \geometry{left=20mm,right=20mm,top=20mm,bottom=30mm}
 \usepackage{fancyvrb}   % for verbatim monospace computer code
@@ -20,7 +55,7 @@
   {\par\medskip\noindent\minipage{\linewidth}}
   {\endminipage\par\medskip}
 \begin{document}
-\title{UNIK 4690 Computer Vision Project\\ Human Image Extraction}
+\title{UNIK 4690 Computer Vision Project\\ Pose \& Seg}
 \author{Joseph Knutson \& Jacob Alexander Hay}
 \date{2018-05-27}
 \maketitle
@@ -32,17 +67,20 @@
 %\url{https://www.cs.cmu.edu/~hebert/boundaries.htm}
 \abstract{}
 \section*{Introduction}
-Object Detection, is a field within Computer Vision with the purpose of detecting objects of certain classes. These classes can range from
-footballs to pedestrians. When succefully detecting the latter, one usually ends up with is a rough or rectangular patch of the image.
-\\
-\\
+Object Detection is a field within Computer Vision with the purpose of detecting objects of different classes. These classes of objects range from
+footballs to pedestrians. There are many methods for detecting the latter, but sadly, most of these methods care not to specify the position of 
+of a person with high precision. 
+Instead, some methods return rectangular patches where the person resides, while others return only a handful of key-points.
+
+
 This project aims to combine modern pose detection methods, like \cite{swag}, with image processing and feature detection methods like Laplacian Blending and Edge Detection 
 in order to not only detect people in images, but to better describe which pixels they inhabit. Once the human's pixels are extracted, they can be used for various things, like 3D reconstruction or
 transferring them to other images via image blending. The latter of which we have successfully implemented.
-\\
-\\
-The following chapters will discuss what tools we've used. What we've borrowed from others. Which things we've implemented during our process, both that which works and that which did not.
-And finally, we point out what we want to improve and further implement.
+
+
+The following chapters will discuss what tools we've used and roughly touch on the theory behind them. We'll clarify what we've borrowed from others. Which things we've implemented during our process, both that which works and that which did not.
+And finally, we point out what we wish to improve and further implement.
+
 
 %\section*{Background}
 %Green Screens, are used in movies, series, news, video-games and home-made videos with the main reason of providing an artificial background. The technique requires an
@@ -55,6 +93,67 @@ And finally, we point out what we want to improve and further implement.
 %Even though Computer Vision has taught us powerful, color based segmentation methods, they rely on plain backgrounds. Colour based segmentation is therefore not in our interest, as we seek to create something more flexible.
 %Instead of using gaussian classification on the local colorspace to extract people from the image, we propose a method relying on feature detection, contouring and laplacian blurring, as an alternative.
 
+\section*{Theory}
+This chapter presents the methods we've used and a little bit about the theory behind them.
+\subsection*{Pose Detection}
+Pose Detection is a computer vision technology which aims to detect key-points points, often on a person's body, in order to define
+that object's pose. Pose is in this case the translational information of the person in the image, its position in other words. In image 
+\ref{fig:pose1} you can observe the algorithm\footnotemark \footnotetext{This algorithm was written by OpenPose\\Link to source: https://github.com/ildoonet/tf-pose-estimation} at work.
+The pose detection algorithm is the basis for our project, and as you can see, it finds key-points on both bodies and faces.
+\\
+\\
+\begin{figure}\centering
+\includegraphics[width=0.5\textwidth]{smile}
+\caption{Pose detection algorithm which finds key body-points.}
+\label{fig:pose1}
+\end{figure}
+There are many ways to go about pose-detecting. The method we have borrowed from OpenPose is a modern method based on deep-learning, first presented by \cite{swag} in 2014.
+The algorithm is built upon a deep convolutional neural-network developed by Carnegie Mellon University with help of COCO and MPII datasets.
+This deep convolutional neural network has a generic DNN architecture, consisting of several layers -- each being a linear transformation followed by a non-linear one. The first layer takes
+as input an image of predefined size. The further convolution of this image can be observed in image \ref{fig:pose2}. The network's output is, as we saw, the key-points of the person's joints and face.
+\begin{figure}\centering
+\includegraphics[width=1\textwidth]{deep}
+\caption{Diagram of the pose detection DNN, showing the convolutional behavior of this kind of network.}
+\label{fig:pose2}
+\end{figure}
+\clearpage
+\subsection*{Edge Detection}
+Edges can be both basic yet informative features in images. A basic way of finding edges is to look for large changes in pixel values along the x and y axes.
+This is equivalent to finding the gradient, or derivative of the image. Mathematically, we can express the edge intensity in a pixel as the difference between its neighbouring pixels' values:
+\begin{equation}
+I_e(x,y) = |I(x-1,y) - I(x+1,y)| + |I(x,y-1) - I(x+1,y+1)|
+\end{equation}
+where $I_e$ is the pixel value in the new edge image, $I$ is the pixel value in the original image, and x and y are image coordinates.
+There are many more methods to finding edges that add more complexities, like using the Laplacian or adding threshold techniques. A famous edge detector function 
+found in Open CV, called Canny works its magic in image \ref{fig:canny}
+\begin{figure}\centering
+\includegraphics[width=.6\textwidth]{canny}
+\caption{The Canny function detects edges in an image. It also includes threshold parameters which can reduce noisy details.}
+\label{fig:canny}
+\end{figure}
+
+\subsection*{Image Pyramids and Laplace Blending}
+Laplace blending is an important part of our algorithm. The idea of Laplace blending is to first create a Gaussian and Laplacian pyramid for
+two different images, use a ramp-filter to define the overlapping behaviour they should have, and then collapse the overlapping image pyramids.
+Image \ref{fig:lap1}, \ref{fig:lap2}, and \ref{fig:lap3} are intuitive lecture slides from our course that explain the smooth image merging that Laplace blending offers.
+Not only do we use these pyramids for Laplace blending, we also use them for contouring.
+\begin{figure}\centering
+\includegraphics[width=.6\textwidth]{lap1}
+\caption{The Gaussian image pyramid.}
+\label{fig:lap1}
+\end{figure}
+\begin{figure}\centering
+\includegraphics[width=.7\textwidth]{lap2}
+\caption{The Laplacian pyramid.}
+\label{fig:lap2}
+\end{figure}
+\begin{figure}\centering
+\includegraphics[width=.7\textwidth]{lap3}
+\caption{The conjoining of the images at multiple resolution levels with the help of a ramp/mask.}
+\label{fig:lap3}
+\end{figure}
+
+\clearpage
 \section*{Idea Process, 2D/3D, and Library Independence:}
 
 In the beginning we had an idea to try to go into segmentation and explore methods to 
@@ -114,11 +213,11 @@ plain segmentation-implementation.
 
 \begin{thebibliography}{9}
 \bibitem{swag} 
-Alexander Toshev, Christian Szegedy. \\
-\textit{DeepPose: Human Pose Estimation via Deep Neural Networks}. 2014.
-\\\texttt{http://openaccess.thecvf.com/content\_cvpr\_2014/papers/Toshev\_DeepPose\_Human\_Pose\_2014\_CVPR\_paper.pdf}
-
-
+Alexander Toshev (Google), Christian Szegedy (Google). \\
+\textit{DeepPose: Human Pose Estimation via Deep Neural Networks}. 2014.\\
+Conference on Computer Vision and Pattern Recognition, 2014.
+\\\texttt{http://openaccess.thecvf.com/content\_cvpr\_2014/papers/Toshev\_DeepPose\_Human\_Pose\_2014\_CVPR\_paper.pdf}\\
+Google, 1600 Amphitheatre Pkwy, Mountain View, CA 94043
 \end{thebibliography}
 
 
