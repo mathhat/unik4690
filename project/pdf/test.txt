@@ -55,7 +55,7 @@
   {\par\medskip\noindent\minipage{\linewidth}}
   {\endminipage\par\medskip}
 \begin{document}
-\title{UNIK 4690 Computer Vision Project\\ Pose \& Seg}
+\title{UNIK 4690 Computer Vision Project\\ Pose \& Seg \\ \small{\href{https://github.com/mathhat/unik4690/tree/master/project}{Source}}}
 \author{Joseph Knutson \& Jacob Alexander Hay}
 \date{2018-05-27}
 \maketitle

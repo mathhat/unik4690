@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from LatexTemplate import *
-Type = Template(Title = "UNIK 4690 Computer Vision Project\\\ Pose \& Seg", author="Joseph Knutson \& Jacob Alexander Hay") #<----- Header title
+Type = Template(Title = "UNIK 4690 Computer Vision Project\\\ Pose \& Seg \\\ \small{\href{https://github.com/mathhat/unik4690/tree/master/project}{Source}}", author="Joseph Knutson \& Jacob Alexander Hay") #<----- Header title
 #^additional vars: author(str), date(str), landscape(boolean) 
 #---create content as raw string below--# 
 #----------using LaTeX-format-----------#  
