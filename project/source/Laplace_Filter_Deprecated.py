@@ -6,6 +6,7 @@ Laplace Pyramid Blending of images.
 """
 import cv2
 import numpy as np
+from skimage.transform import resize as skresize
 
 def constructGaussian(img, depth=6): 
     G = img.copy()
@@ -55,7 +56,28 @@ def Laplacian_blend(image1, image2, blending_filter):
         recons = cv2.pyrUp(recons)
         recons = cv2.add(recons, LS[i])
         
-    return recons
+    return recons, [lp1,lp2], [gp1,gp2]
     
  
-        
+def get_LaplaceDetail(laplace_pyr,detail=2, dim=[480,640]):
+     """
+     Provide Laplacian Pyramid of image to extract details from. 
+     dim; shape of the image size you wish. (typically the 
+          shape of the image you'll be using it in.)
+     Using skimage for resizing. 
+     detail = which detail space. 
+     # assuming skimage - resize. 
+     """
+     return skresize(laplace_pyr[detail], dim), laplace_pyr[detail].shape
+
+import skimage.measure as skm 
+def er_dil_filter(image, erode_dilate="erode", dim=(5,5)):
+    """
+    local minima of pixels. 
+    """
+    if erode_dilate == "erode":
+        return skm.block_reduce(image, dim, np.min)
+    elif erode_dilate == "dilate": 
+        return skm.block_reduce(image, dim, np.max)
+
+    

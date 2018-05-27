@@ -3,10 +3,31 @@ import common
 import cv2
 import numpy as np
 import read
+from Laplace_Filter_Deprecated import *
+import itertools
 def gradient(img):
-    huh, contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    shit = [] 
+    G = constructGaussian(img)
+    L = constructLaplacian(G)
+    detail_img = L[2]
+    huh, contours, hierarchy = cv2.findContours(detail_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    #shit = []    
+    # Note: endrer på shitten her: bruker dilering og lukking av kurvene heller. 
+    new_img = cv2.drawContours(detail_img, contours, -1, [255,255,255])
+    #Dilate + Erode = Closing.  
+    dilated = cv2.dilate(new_img, np.ones((5,5),dtype=np.uint8))
+    for _ in itertools.repeat(None,len(L)-3):
+        #concept: Could dilate and close on every level ? (try without.)
+        #dilated = cv2.dilate(dilated, np.ones((2,2),dtype=np.uint8))
+        dilated = cv2.pyrUp(dilated)
+        #dilated = cv2.morphologyEx(dilated, cv2.MORPH_CLOSE, np.ones((2,2),dtype=np.uint8))
+    closed = cv2.morphologyEx(dilated, cv2.MORPH_CLOSE, np.ones((5,5),dtype=np.uint8))
+
+    #closed = cv2.pyrUp(closed)
+
+    return closed
+    """
     for i in contours:
+        #shit.append(i[0], i[-1])
         for j in i:
             shit.append([j[0][0],j[0][1]])
     if len(shit) >10:
@@ -18,6 +39,7 @@ def gradient(img):
 
     else:
         return img*0
+    """
 def eye_jaw(img, eyes, ears, col): 
     #concept: 
     # introducing a new vector 
@@ -123,8 +145,8 @@ def eye_jaw(img, eyes, ears, col):
                                 (leye[0] + .3*dx, 
                                  leye[1])]],dtype=np.int_)
         cv2.fillPoly(img, vertices, col)
-
     return img
+
 def draw_head(npimg,imgog,Centers,col,bol,k=[0]):
     tryvar = lambda varpos: Centers[varpos] if varpos in Centers.keys() else None
     lear = tryvar(17)
@@ -179,7 +201,7 @@ def draw_head(npimg,imgog,Centers,col,bol,k=[0]):
           
             
             hx = int(rx+dx/10.*4*k7*0.95) #- dx*20 / (rx-leye[0]))
-            #Jacob's magic circle coord (next to ear) ?? wtf. fight me
+            #Jacob's magic circle coord (next to ear) ?? wtf. fight me ????
             hy = int((rear[1]+leye[1])/2+dx/10.*k3*1.6)
             hy2 = hy - dx/10
 
@@ -393,7 +415,7 @@ def draw_humans(img, humans,bol=1,tol1=100,tol2=150,k=[0]): #main function
         imgog = cv2.Canny(imgog,150,100)
         a=draw_head(npimg,imgog,Centers,col,bol,k) #draws head (with internal jaw-line)
         if np.any(a > 0):
-            a = cv2.dilate(a,np.ones((11,11)))
+            a = cv2.dilate(a,np.ones((11,11), dtype=np.uint8))
             a = np.uint8(np.multiply(imgog,a/255.))
             a = gradient(a)        
             npimg*=0
@@ -401,11 +423,16 @@ def draw_humans(img, humans,bol=1,tol1=100,tol2=150,k=[0]): #main function
         
         c=draw_torso(npimg,imgog,Centers,col) #sigh
         if np.any(c > 0):
-            c = cv2.dilate(c,np.ones((11,11)))
+            c = cv2.dilate(c,np.ones((11,11), dtype=np.uint8))
             c = np.uint8(np.multiply(imgog,c/255.))
             c = gradient(c)
         npimg*=0
         d=draw_hands(npimg,imgog,Centers,col)
-        npimgtot += a+d+b+c+d
-        
+        #This is weird... 
+        npimgtot += a+b+c+d
+        #SMH; int64 vs uint8 error : Shoud use like: 
+        #npimgtot += np.where(a>0 ,1,0)
+        #npimgtot += np.where(b>0, 1,0)
+        #npimgtot += np.where(c>0, 1,0)
+        #npimgtot += np.where(d>0, 1,0)
     return npimgtot
