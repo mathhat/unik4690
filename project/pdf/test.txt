@@ -134,7 +134,7 @@ found in Open CV, called Canny works its magic in image \ref{fig:canny}
 
 \subsection*{Image Pyramids and Laplace Blending}
 Laplace blending is an important part of our algorithm. The idea of Laplace blending is to first create a Gaussian and Laplacian pyramid for
-two different images, use a ramp-filter to define the overlapping behaviour they should have, and then collapse the overlapping image pyramids.
+two different images, use a mask-filter to define the overlapping behaviour they should have, and then collapse the overlapping image pyramids.
 Image \ref{fig:lap1}, \ref{fig:lap2}, and \ref{fig:lap3} are intuitive lecture slides from our course that explain the smooth image merging that Laplace blending offers.
 Not only do we use these pyramids for Laplace blending, we also use them for contouring.
 \begin{figure}\centering
@@ -149,7 +149,7 @@ Not only do we use these pyramids for Laplace blending, we also use them for con
 \end{figure}
 \begin{figure}\centering
 \includegraphics[width=.7\textwidth]{lap3}
-\caption{The conjoining of the images at multiple resolution levels with the help of a ramp/mask.}
+\caption{The conjoining of the images at multiple resolution levels with the help of a mask.}
 \label{fig:lap3}
 \end{figure}
 
@@ -236,7 +236,7 @@ As of now, the dummy looks like it does in image \ref{dummy2}.
 
 \subsection*{Laplace Blending}
 With a human dummy that roughly fits over the person in the image, Jacob proposed to simply laplace blend the person into another image, using the
-dummy as a ramp/mask. This gave some rather good results, but with a bit blurred out edges along the person (see figure \ref{1} and \ref{2}).
+dummy as a mask. This gave some rather good results, but with a bit blurred out edges along the person (see figure \ref{1} and \ref{2}).
 
 \begin{figure}\centering
 \includegraphics[width=.5\textwidth]{1}
