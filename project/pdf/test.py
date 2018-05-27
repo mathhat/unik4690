@@ -15,17 +15,20 @@ content += r'''
 %\url{https://www.cs.cmu.edu/~hebert/boundaries.htm}
 \abstract{}
 \section*{Introduction}
-Object Detection, is a field within Computer Vision with the purpose of detecting objects of certain classes. These classes can range from
-footballs to pedestrians. When succefully detecting the latter, one usually ends up with is a rough or rectangular patch of the image.
-\\
-\\
+Object Detection is a field within Computer Vision with the purpose of detecting objects of different classes. These classes of objects range from
+footballs to pedestrians. There are many methods for detecting the latter, but sadly, most of these methods care not to specify the position of 
+of a person with high precision. 
+Instead, some methods return rectangular patches where the person resides, while others return only a handful of key-points.
+
+
 This project aims to combine modern pose detection methods, like \cite{swag}, with image processing and feature detection methods like Laplacian Blending and Edge Detection 
 in order to not only detect people in images, but to better describe which pixels they inhabit. Once the human's pixels are extracted, they can be used for various things, like 3D reconstruction or
 transferring them to other images via image blending. The latter of which we have successfully implemented.
-\\
-\\
+
+
 The following chapters will discuss what tools we've used and roughly touch on the theory behind them. We'll clarify what we've borrowed from others. Which things we've implemented during our process, both that which works and that which did not.
 And finally, we point out what we wish to improve and further implement.
+
 
 %\section*{Background}
 %Green Screens, are used in movies, series, news, video-games and home-made videos with the main reason of providing an artificial background. The technique requires an
@@ -43,13 +46,16 @@ This chapter presents the methods we've used and the theory behind them.
 \subsection*{Pose Detection}
 Pose Detection is a computer vision technology which aims to detect key-points points, often on a person's body, in order to define
 that object's pose. Pose is in this case the translational information of the person in the image, its position in other words. In image 
-\ref{fig:pose1} you can observe the algorithm at work.
+\ref{fig:pose1} you can observe the algorithm\footnotemark \footnotetext{https://github.com/ildoonet/tf-pose-estimation}. at work.
 
-\begin{figure}
-\includegraphics[width=\textwidth]{}
+\begin{figure}\centering
+\includegraphics[width=0.5\textwidth]{smile}
+\caption{Pose detection algorithm which finds key body-points.}
+\label{fig:pose1}
 \end{figure}
 
 
+\clearpage
 \section*{Idea Process, 2D/3D, and Library Independence:}
 
 In the beginning we had an idea to try to go into segmentation and explore methods to 
