@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from LatexTemplate import *
-Type = Template(Title = "UNIK 4690 Computer Vision Project\\\ Human Image Extraction", author="Joseph Knutson \& Jacob Alexander Hay") #<----- Header title
+Type = Template(Title = "UNIK 4690 Computer Vision Project\\\ Pose \& Seg", author="Joseph Knutson \& Jacob Alexander Hay") #<----- Header title
 #^additional vars: author(str), date(str), landscape(boolean) 
 #---create content as raw string below--# 
 #----------using LaTeX-format-----------#  
@@ -46,7 +46,10 @@ This chapter presents the methods we've used and the theory behind them.
 \subsection*{Pose Detection}
 Pose Detection is a computer vision technology which aims to detect key-points points, often on a person's body, in order to define
 that object's pose. Pose is in this case the translational information of the person in the image, its position in other words. In image 
-\ref{fig:pose1} you can observe the algorithm\footnotemark \footnotetext{https://github.com/ildoonet/tf-pose-estimation}. at work.
+\ref{fig:pose1} you can observe the algorithm\footnotemark \footnotetext{This algorithm was written by OpenPose\\Link to source: https://github.com/ildoonet/tf-pose-estimation} at work.
+The pose detection algorithm is the basis for our project, and as you can see, it finds key-points on both bodies and faces.
+
+There are many ways to go about pose-detection
 
 \begin{figure}\centering
 \includegraphics[width=0.5\textwidth]{smile}
