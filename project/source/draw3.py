@@ -8,19 +8,21 @@ import itertools
 def gradient(img):
     G = constructGaussian(img)
     L = constructLaplacian(G)
-    detail_img = L[1]
+    det_lev = 3
+    detail_img = L[det_lev]
     huh, contours, hierarchy = cv2.findContours(detail_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     #shit = []    
     # Note: endrer på shitten her: bruker dilering og lukking av kurvene heller. 
     new_img = cv2.drawContours(detail_img, contours, -1, [255,255,255])
     #Dilate + Erode = Closing.  
-    dilated = cv2.dilate(new_img, np.ones((5,5),dtype=np.uint8))
-    for _ in itertools.repeat(None,len(L)-3):
+    dilated = cv2.dilate(new_img, np.ones((4,4),dtype=np.uint8))
+    for _ in itertools.repeat(None,len(L)-(det_lev +1)):
         #concept: Could dilate and close on every level ? (try without.)
-        #dilated = cv2.dilate(dilated, np.ones((2,2),dtype=np.uint8))
+        dilated = cv2.dilate(dilated, np.ones((5,5),dtype=np.uint8))
+        dilated = cv2.erode(dilated, np.ones((5,5),dtype=np.uint8))
         dilated = cv2.pyrUp(dilated)
-        #dilated = cv2.morphologyEx(dilated, cv2.MORPH_CLOSE, np.ones((2,2),dtype=np.uint8))
-    closed = cv2.morphologyEx(dilated, cv2.MORPH_CLOSE, np.ones((5,5),dtype=np.uint8))
+        
+    closed = cv2.morphologyEx(dilated, cv2.MORPH_CLOSE, np.ones((2,2),dtype=np.uint8))
 
     #closed = cv2.pyrUp(closed)
 
@@ -412,10 +414,10 @@ def draw_humans(img, humans,bol=1,tol1=100,tol2=150,k=[0]): #main function
             Centers[i] = center
 
             #cv2.circle(npimg, center, 3, common.CocoColors[i], thickness=7, lineType=8, shift=0)
-        imgog = cv2.Canny(imgog,150,100)
+        imgog = cv2.Canny(imgog,tol1,tol2)
         a=draw_head(npimg,imgog,Centers,col,bol,k) #draws head (with internal jaw-line)
         if np.any(a > 0):
-            a = cv2.dilate(a,np.ones((11,11), dtype=np.uint8))
+            a = cv2.dilate(a,np.ones((16,16), dtype=np.uint8))
             a = np.uint8(np.multiply(imgog,a/255.))
             a = gradient(a)        
             npimg*=0
@@ -435,3 +437,4 @@ def draw_humans(img, humans,bol=1,tol1=100,tol2=150,k=[0]): #main function
         #npimgtot += np.where(c>0, 1,0)
         #npimgtot += np.where(d>0, 1,0)
     return npimgtot
+
